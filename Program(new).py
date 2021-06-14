@@ -35,15 +35,19 @@ class Main():
             return
         if self.row_add > self.totalrows:
             for i in range(self.row_add - self.totalrows):
-                label10 = ttk.Label(frame1, text = ("{}".format(self.totalrows + i + 1)))
-                label10.grid(row = (self.number_row_to_paste + i), column = 0, padx = 0, pady = 0, ipadx = 40, sticky = W)
+                label10 = ttk.Label(frame1,
+                                    text = ("{}".format(self.totalrows + i + 1)))
+                label10.grid(row = (self.number_row_to_paste + i), column = 0,
+                             padx = 0, pady = 0, ipadx = 40, sticky = W)
                 ent3 = Entries((self.number_row_to_paste + i), 0, E)
                 ent4 = Entries((self.number_row_to_paste + i), 1, W)
                 self.listrows.append((ent3, ent4, label10))
             if self.row_add <= 14:
-                draw.configure(height = ent1.ent.winfo_height() * self.row_add, scrollregion = (0, 0, 0, 0))
+                draw.configure(height = ent1.ent.winfo_height() * self.row_add,
+                               scrollregion = (0, 0, 0, 0))
             else:
-                draw.configure(height = 310, scrollregion = (0, 0, 0, ent1.ent.winfo_height() * self.row_add))
+                draw.configure(height = 310, scrollregion = (0, 0, 0,
+                               ent1.ent.winfo_height() * self.row_add))
             self.totalrows = self.row_add
             sep3.sep.grid(row = self.totalrows + 7, column = 0, columnspan = 4,
                       padx = PADX, pady = PADY, sticky = EW)
@@ -60,9 +64,11 @@ class Main():
             sep3.sep.grid(row = self.totalrows + 7, column = 0, columnspan = 4,
                       padx = PADX, pady = PADY, sticky = EW)
             if self.row_add <= 14:
-                draw.configure(height = ent1.ent.winfo_height() * self.row_add, scrollregion = (0, 0, 0, 0))
+                draw.configure(height = ent1.ent.winfo_height() * self.row_add,
+                               scrollregion = (0, 0, 0, 0))
             else:
-                draw.configure(height = 310, scrollregion = (0, 0, 0, ent1.ent.winfo_height() * self.row_add))
+                draw.configure(height = 310, scrollregion = (0, 0, 0,
+                               ent1.ent.winfo_height() * self.row_add))
 
     def calc_result(self):
         """Производит рассчет погрешности и выводит полученное значение в
@@ -112,8 +118,8 @@ class Main():
         основе загруженных координат
         """
         try:
-            file_name = fd.askopenfilename()
-            with open(file_name) as f:
+            file_name = fd.askopenfilename()  # загружаем координаты в
+            with open(file_name) as f:        # формате .txt
                 coords = f.readlines()
         except FileNotFoundError:
             return
