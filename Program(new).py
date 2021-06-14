@@ -127,10 +127,10 @@ class Main():
         for i in range(len(coords)):          # меняем запятые на точки,
             if "," in coords[i]:
                 coords[i] = coords[i].replace("," ,".")
-            coords[i] = coords[i].rstrip('\n') 
+            coords[i] = coords[i].rstrip('\n')
             coords[i] = coords[i].split()
-        coords.insert(0, coords[-1])
-        coords.append(coords[1])
+        coords.insert(0, coords[-1])          # дополняем список первым и
+        coords.append(coords[1])              # последним элементом
         tmp_list = []
         for i in range(1, len(coords)-1):
             tmp_list.append((float(coords[i-1][1]) - float(coords[i+1][1]))**2 +\
