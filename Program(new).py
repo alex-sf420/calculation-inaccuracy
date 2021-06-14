@@ -14,8 +14,11 @@ class Main():
     количества строк для частей/помещений
     """
     def __init__(self):
+        """Определяем текущее значение точности, отображенных строк,
+        списка отображаемых строк и значение погрешности
+        """
         self.accuracy = 0.01
-        self.totalrows = 1
+        self.totalrows = 0
         self.listrows = []
         self.result = 0
 
@@ -228,6 +231,7 @@ opt.grid(row = 3, column = 1, padx = PADX, pady = PADY)
 ent1 = Entries(7, 0, E)
 ent2 = Entries(7, 1, W)
 table.listrows.append((ent1, ent2))
+Main.totalrows = 1
 
 
 sep1 = Separators(0, 2, rowspan = 100, orient = VERTICAL)
