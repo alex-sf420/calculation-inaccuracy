@@ -124,10 +124,10 @@ class Main():
         except FileNotFoundError:
             return
         coords.pop()
-        for i in range(len(coords)):
+        for i in range(len(coords)):          # меняем запятые на точки,
             if "," in coords[i]:
                 coords[i] = coords[i].replace("," ,".")
-            coords[i] = coords[i].rstrip('\n')
+            coords[i] = coords[i].rstrip('\n') 
             coords[i] = coords[i].split()
         coords.insert(0, coords[-1])
         coords.append(coords[1])
