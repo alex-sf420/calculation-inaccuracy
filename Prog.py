@@ -188,11 +188,11 @@ class Sboxes:
         self.sbox.grid(row = row, column = column, padx = padx,
                    pady = pady)
 
-
 root = ThemedTk(theme = "itft1")
 root.title("Расчет СКП площади")
 
 table = Main()
+
 
 frame = ttk.Frame()
 frame.grid(sticky=(N,E,S,W))
