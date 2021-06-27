@@ -105,8 +105,6 @@ class Main():
         else:
             label9.lab["text"] = (str(self.result) + " " + "кв.м.")
 
-        print(self.result)
-
 
     def check_accurasy(self, event):
         """Регулирует значение кривизны стен"""
@@ -191,7 +189,7 @@ class Sboxes:
         self.sbox.insert(0, 1)
         self.sbox.grid(row = row, column = column, padx = padx,
                    pady = pady)
-list
+
 root = ThemedTk(theme = "itft1")
 root.title("Расчет СКП площади")
 
@@ -241,7 +239,7 @@ opt.grid(row = 3, column = 1, padx = PADX, pady = PADY)
 ent1 = Entries(7, 0, E)
 ent2 = Entries(7, 1, W)
 table.listrows.append((ent1, ent2))
-Main.totalrows = 1
+table.totalrows = 1
 
 
 sep1 = Separators(0, 2, rowspan = 100, orient = VERTICAL)
