@@ -187,7 +187,7 @@ class Sboxes:
         self.sbox.insert(0, 1)
         self.sbox.grid(row = row, column = column, padx = padx,
                    pady = pady)
-
+list
 root = ThemedTk(theme = "itft1")
 root.title("Расчет СКП площади")
 
