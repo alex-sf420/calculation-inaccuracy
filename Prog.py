@@ -84,6 +84,8 @@ class Main():
         try:
             for ent in self.listrows:
                 width = (ent[0].ent.get())
+                if not width and len(parameters) == 0:
+                    return
                 if not width:
                     break
                 if "," in width:
@@ -102,6 +104,8 @@ class Main():
             label9.lab["text"] = ("0,1 кв.м.")
         else:
             label9.lab["text"] = (str(self.result) + " " + "кв.м.")
+
+        print(self.result)
 
 
     def check_accurasy(self, event):
