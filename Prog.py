@@ -1,5 +1,4 @@
 from tkinter import *
-from tkinter import messagebox as mb
 from tkinter import filedialog as fd
 from tkinter import ttk
 from ttkthemes import ThemedTk
