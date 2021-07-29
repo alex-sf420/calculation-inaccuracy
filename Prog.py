@@ -8,7 +8,7 @@ from decimal import Decimal, ROUND_HALF_UP
 PADX = 8
 PADY = 8
 
-class Main():
+class Calculations():
     """Содержит функции для расчета погрешности и отображения необходимого
     количества строк для частей/помещений
     """
@@ -34,7 +34,7 @@ class Main():
             return
         if self.row_add > self.totalrows:
             for i in range(self.row_add - self.totalrows):
-                label10 = ttk.Label(frame1,
+                label10 = ttk.Label(frame2,
                                     text = ("{}".format(self.totalrows + i + 1)))
                 label10.grid(row = (self.number_row_to_paste + i), column = 0,
                              padx = 0, pady = 0, ipadx = 40, sticky = W)
@@ -104,7 +104,6 @@ class Main():
         else:
             label9.lab["text"] = (str(self.result) + " " + "кв.м.")
 
-
     def check_accurasy(self, event):
         """Регулирует значение кривизны стен"""
         if event == "1 см":
@@ -147,7 +146,7 @@ class Main():
 class Buttons:
     """Отображает кнопки"""
     def __init__(self, text, command, row, column, padx = PADX, pady = PADY):
-        self.but = ttk.Button(frame, text = text, command = command)
+        self.but = ttk.Button(frame1, text = text, command = command)
         self.but.grid(row = row, column = column, padx = padx,
                     pady = pady)
 
@@ -156,7 +155,7 @@ class Lables:
     """Отображает метки"""
     def __init__(self, text, row, column, sticky = None, columnspan = None,
                  padx = PADX, pady = PADY, font = None):
-        self.lab = ttk.Label(frame, text = text, font = font)
+        self.lab = ttk.Label(frame1, text = text, font = font)
         self.lab.grid(row = row, column = column,
                     columnspan = columnspan, padx = padx,
                     pady = pady, sticky = sticky)
@@ -165,7 +164,7 @@ class Lables:
 class Entries:
     """Отображает поля"""
     def __init__(self, row, column, sticky):
-        self.ent = ttk.Entry(frame1, width = 12)
+        self.ent = ttk.Entry(frame2, width = 12)
         self.ent.grid(row = row, column = column,
                     sticky = sticky)
 
@@ -174,7 +173,7 @@ class Separators:
     """Отображает разделительные линии"""
     def __init__(self, row, column, rowspan = None, columnspan = None,
                  padx = None, pady = None, orient = None):
-        self.sep = ttk.Separator(frame, orient = orient)
+        self.sep = ttk.Separator(frame1, orient = orient)
         self.sep.grid(row = row, column = column,
                       rowspan = rowspan, columnspan = columnspan,
                       padx = padx, pady = pady, sticky = (N,E,S,W))
@@ -183,7 +182,7 @@ class Separators:
 class Sboxes:
     """Отображает поля выбора значений"""
     def __init__(self, from_, to, row, column, padx = PADX, pady = PADY):
-        self.sbox = ttk.Spinbox(frame, width = 5, from_ = from_,
+        self.sbox = ttk.Spinbox(frame1, width = 5, from_ = from_,
                                 to = to)
         self.sbox.insert(0, 1)
         self.sbox.grid(row = row, column = column, padx = padx,
@@ -192,18 +191,18 @@ class Sboxes:
 root = ThemedTk(theme = "itft1")
 root.title("Расчет СКП площади")
 
-table = Main()
+table = Calculations()
 
 
-frame = ttk.Frame()
-frame.grid(sticky=(N,E,S,W))
+frame1 = ttk.Frame()
+frame1.grid(sticky=(N, E, S, W))
 
 
-draw = Canvas(frame, width = 173, height = 20, bd=0, highlightthickness=0)
+draw = Canvas(frame1, width = 173, height = 20, bd=0, highlightthickness=0)
 draw.config(scrollregion = draw.bbox("ALL"))
-draw.sbar = Scrollbar(frame, orient=VERTICAL)
-frame1 = ttk.Frame(draw)
-draw.create_window(0, 0, window=frame1, width=173, anchor=N+W)
+draw.sbar = Scrollbar(frame1, orient=VERTICAL)
+frame2 = ttk.Frame(draw)
+draw.create_window(0, 0, window=frame2, width=173, anchor=N + W)
 
 draw['yscrollcommand'] = draw.sbar.set
 draw.sbar['command'] = draw.yview
@@ -216,7 +215,7 @@ label3 = Lables("Кривизна стен:", 3, 0, E)
 label4 = Lables("Размеры частей/помещений:", 5, 0, SE, columnspan = 2, pady = 5)
 label5 = Lables("Длина, м", 6, 0, SE, pady = 0)
 label6 = Lables("Ширина, м", 6, 1, SW, pady = 0)
-label7 = ttk.Label(frame1, text = "1")
+label7 = ttk.Label(frame2, text ="1")
 label7.grid(row = 7, column = 0, padx = 0, pady = 0, ipadx = 40, sticky = W)
 label8 = Lables("Результат:", 5, 3, font = ('Sans','10','bold'))
 label9 = Lables((str(table.result) + " " + "кв.м."), 6, 3,
@@ -232,7 +231,7 @@ sbox2 = Sboxes(1, 50, 2, 1)
 variable = StringVar()
 options = ["1 см", "2 см", "3 см"]
 variable.set(options[0])
-opt = ttk.OptionMenu(frame, variable, '', *options, command = table.check_accurasy)
+opt = ttk.OptionMenu(frame1, variable, '', *options, command = table.check_accurasy)
 opt.grid(row = 3, column = 1, padx = PADX, pady = PADY)
 
 ent1 = Entries(7, 0, E)
