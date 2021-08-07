@@ -28,21 +28,22 @@ class Frames:
 class Buttons:
     """Отображает кнопки"""
 
-    def __init__(self, parent, calculations):
+    def __init__(self, parent, main):
         self.parent = parent
 
-        self.but1 = ttk.Button(self.parent, text="Отобразить", command=calculations.set_row)
+        self.but1 = ttk.Button(self.parent, text="Отобразить", command=main.set_row)
         self.but1.grid(row=1, column=3, padx=Main.padx)
-        self.but2 = ttk.Button(self.parent, text="Рассчитать", command=calculations.calc_result)
+        self.but2 = ttk.Button(self.parent, text="Рассчитать", command=main.calc_result)
         self.but2.grid(row=2, column=3, padx=Main.padx)
-        self.but3 = ttk.Button(self.parent, text="S застройки", command=calculations.calc_built_up)
+        self.but3 = ttk.Button(self.parent, text="S застройки", command=main.calc_built_up)
         self.but3.grid(row=3, column=3, padx=Main.padx)
 
 
 class Lables:
-    """Отображает метки"""
+    """Отображает метки, динамическая перерисовка производится
+    в методе set_row класса Main"""
 
-    def __init__(self, parent1, parent2, calculations):
+    def __init__(self, parent1, parent2, main):
         self.parent1 = parent1
         self.parent2 = parent2
         self.label1 = ttk.Label(self.parent1, text="Количество частей/помещений:")
@@ -61,15 +62,16 @@ class Lables:
         self.label7.grid(row=7, column=0, sticky=W, ipadx=40)
         self.label8 = ttk.Label(self.parent1, text="Результат:", font=('Sans', '10', 'bold'))
         self.label8.grid(row=5, column=3, padx=Main.padx, pady=Main.pady)
-        self.label9 = ttk.Label(self.parent1, text=(str(calculations.result) + " " + "кв.м."),
+        self.label9 = ttk.Label(self.parent1, text=(str(main.result) + " " + "кв.м."),
                                 font=('Sans', '15', 'bold'))
         self.label9.grid(row=6, column=3, padx=Main.padx, pady=Main.pady)
         
 
 class Entries:
-    """Отображает поля"""
+    """Отображает поля, динамическая перерисовка производится
+    в методе set_row класса Main"""
 
-    def __init__(self, parent, calculations):
+    def __init__(self, parent, main):
         self.parent = parent
         self.width = 12
         self.ent1 = ttk.Entry(self.parent, width=self.width)
@@ -77,12 +79,14 @@ class Entries:
         self.ent2 = ttk.Entry(self.parent, width=self.width)
         self.ent2.grid(row=7, column=1, sticky=W)
 
-        calculations.listrows.append((self.ent1, self.ent2))
-        calculations.totalrows = 1
+        main.listrows.append((self.ent1, self.ent2))
+        main.totalrows = 1
 
 
 class Separators:
-    """Отображает разделительные линии"""
+    """Отображает разделительные линии, динамическая перерисовка производится
+    в методе set_row класса Main
+    """
 
     def __init__(self, parent):
         self.parent = parent
@@ -111,20 +115,24 @@ class Sboxes:
 
 
 class Optionmenu:
-    def __init__(self, parent, calculations):
+    def __init__(self, parent, main):
         self.parent = parent
         self.variable = StringVar()
         self.options = ["1 см", "2 см", "3 см"]
         self.variable.set(self.options[0])
         self.opt = ttk.OptionMenu(self.parent, self.variable, '', *self.options,
-                                  command=calculations.check_accurasy)
+                                  command=main.check_accurasy)
         self.opt.grid(row=3, column=1, padx=Main.padx, pady=Main.pady)
 
 
-class Calculations:
+class Main:
     """Содержит функции для расчета погрешности и отображения необходимого
     количества строк для частей/помещений
     """
+
+    padx = 8
+    pady = 8
+    
     def __init__(self, parent):
         self.parent = parent
         self.number_row_to_paste = 0
@@ -133,12 +141,12 @@ class Calculations:
         self.listrows = []  # список строк/полей
         self.result = 0  # результат рассчета погрешности
         self.frames = Frames()
-        self.buttons = Buttons(parent=self.frames.frame1, calculations=self)
-        self.lables = Lables(parent1=self.frames.frame1, parent2=self.frames.frame2, calculations=self)
-        self.entries = Entries(parent=self.frames.frame2, calculations=self)
+        self.buttons = Buttons(parent=self.frames.frame1, main=self)
+        self.lables = Lables(parent1=self.frames.frame1, parent2=self.frames.frame2, main=self)
+        self.entries = Entries(parent=self.frames.frame2, main=self)
         self.separators = Separators(parent=self.frames.frame1)
         self.sboxes = Sboxes(parent=self.frames.frame1)
-        self.optionmenu = Optionmenu(parent=self.frames.frame1, calculations=self)
+        self.optionmenu = Optionmenu(parent=self.frames.frame1, main=self)
 
 
     def set_row(self):
@@ -147,7 +155,7 @@ class Calculations:
         """
 
         self.number_row_to_paste = self.totalrows + 7  # номер row в grid(), в которое будет
-                                                  # добавляться следующаая строка/поле
+                                                       # добавляться следующаая строка/поле
         try:
             row_add = int(self.sboxes.sbox1.get())   # количество строк/полей, которое нужно отразить
         except ValueError:
@@ -172,8 +180,8 @@ class Calculations:
                 self.frames.draw.configure(height=310,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
 
-            totalrows = row_add
-            self.separators.sep3.grid(row=totalrows + 7, column=0, columnspan=4,
+            self.totalrows = row_add
+            self.separators.sep3.grid(row=self.totalrows + 7, column=0, columnspan=4,
                                  padx=Main.padx, pady=Main.pady, sticky=EW)
 
         elif row_add > self.totalrows:
@@ -181,12 +189,12 @@ class Calculations:
         else:
             self.number_row_to_paste = self.totalrows - row_add
             for i in range(self.totalrows - row_add):
-                self.listrows[-1][0].ent.destroy()
-                self.listrows[-1][1].ent.destroy()
+                self.listrows[-1][0].destroy()
+                self.listrows[-1][1].destroy()
                 self.listrows[-1][2].destroy()
                 self.listrows.pop()
-            totalrows = row_add
-            self.separators.sep3.grid(row=totalrows + 7, column=0, columnspan=4,
+            self.totalrows = row_add
+            self.separators.sep3.grid(row=self.totalrows + 7, column=0, columnspan=4,
                                  padx=Main.padx, pady=Main.pady, sticky=EW)
             if row_add <= 14:
                 self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
@@ -201,7 +209,6 @@ class Calculations:
         """
         try:
             levels = int(self.sboxes.sbox2.get())
-            print(int(self.sboxes.sbox2.get()))
         except ValueError:
             return
         if levels < 1:
@@ -270,15 +277,12 @@ class Calculations:
             self.lables.label9["text"] = (str(result) + " " + "кв.м.")
 
 
-class Main:
-    padx = 8
-    pady = 8
-
+class Start:
     def __init__(self):
         self.root = ThemedTk(theme="itft1")
         self.root.title("Расчет СКП площади")
         
-        self.calculations = Calculations(self)
+        self.main = Main(self)
 
         self.centering()
         self.root.mainloop()
@@ -301,4 +305,5 @@ class Main:
 
 
 if __name__ == "__main__":
-    Main()
+    Start()
+
