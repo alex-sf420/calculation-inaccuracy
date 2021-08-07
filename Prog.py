@@ -5,8 +5,120 @@ from ttkthemes import ThemedTk
 from math import sqrt
 from decimal import Decimal, ROUND_HALF_UP
 
-PADX = 8
-PADY = 8
+
+class Frames:
+    """Создает фреймы"""
+
+    def __init__(self):
+        self.frame1 = ttk.Frame()
+        self.frame1.grid(sticky=(N, E, S, W))
+
+        self.draw = Canvas(self.frame1, width=173, height=20, bd=0, highlightthickness=0)
+        self.draw.config(scrollregion=self.draw.bbox("ALL"))
+        self.draw.sbar = Scrollbar(self.frame1, orient=VERTICAL)
+        self.frame2 = ttk.Frame(self.draw)
+        self.draw.create_window(0, 0, window=self.frame2, width=173, anchor=N + W)
+
+        self.draw['yscrollcommand'] = self.draw.sbar.set
+        self.draw.sbar['command'] = self.draw.yview
+        self.draw.sbar.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
+        self.draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
+
+
+class Buttons:
+    """Отображает кнопки"""
+
+    def __init__(self, parent, calculations):
+        self.parent = parent
+
+        self.but1 = ttk.Button(self.parent, text="Отобразить", command=calculations.set_row)
+        self.but1.grid(row=1, column=3, padx=Main.padx)
+        self.but2 = ttk.Button(self.parent, text="Рассчитать", command=calculations.calc_result)
+        self.but2.grid(row=2, column=3, padx=Main.padx)
+        self.but3 = ttk.Button(self.parent, text="S застройки", command=calculations.calc_built_up)
+        self.but3.grid(row=3, column=3, padx=Main.padx)
+
+
+class Lables:
+    """Отображает метки"""
+
+    def __init__(self, parent1, parent2, calculations):
+        self.parent1 = parent1
+        self.parent2 = parent2
+        self.label1 = ttk.Label(self.parent1, text="Количество частей/помещений:")
+        self.label1.grid(row=1, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
+        self.label2 = ttk.Label(self.parent1, text="Количество этажей:")
+        self.label2.grid(row=2, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
+        self.label3 = ttk.Label(self.parent1, text="Кривизна стен:")
+        self.label3.grid(row=3, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
+        self.label4 = ttk.Label(self.parent1, text="Размеры частей/помещений:")
+        self.label4.grid(row=5, column=0, columnspan=2, sticky=SE, padx=Main.padx, pady=5)
+        self.label5 = ttk.Label(self.parent1, text="Длина, м")
+        self.label5.grid(row=6, column=0, sticky=SE, padx=Main.padx)
+        self.label6 = ttk.Label(self.parent1, text="Ширина, м")
+        self.label6.grid(row=6, column=1, sticky=SW, padx=Main.padx)
+        self.label7 = ttk.Label(self.parent2, text="1")
+        self.label7.grid(row=7, column=0, sticky=W, ipadx=40)
+        self.label8 = ttk.Label(self.parent1, text="Результат:", font=('Sans', '10', 'bold'))
+        self.label8.grid(row=5, column=3, padx=Main.padx, pady=Main.pady)
+        self.label9 = ttk.Label(self.parent1, text=(str(calculations.result) + " " + "кв.м."),
+                                font=('Sans', '15', 'bold'))
+        self.label9.grid(row=6, column=3, padx=Main.padx, pady=Main.pady)
+
+
+class Entries:
+    """Отображает поля"""
+
+    def __init__(self, parent, calculations):
+        self.parent = parent
+        self.width = 12
+        self.ent1 = ttk.Entry(self.parent, width=self.width)
+        self.ent1.grid(row=7, column=0, sticky=E)
+        self.ent2 = ttk.Entry(self.parent, width=self.width)
+        self.ent2.grid(row=7, column=1, sticky=W)
+
+        calculations.listrows.append((self.ent1, self.ent2))
+        calculations.totalrows = 1
+
+
+class Separators:
+    """Отображает разделительные линии"""
+
+    def __init__(self, parent):
+        self.parent = parent
+        self.sep1 = ttk.Separator(self.parent, orient=VERTICAL)
+        self.sep1.grid(row=0, column=2, rowspan=100, sticky=(N, E, S, W))
+        self.sep2 = ttk.Separator(self.parent)
+        self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
+                       sticky=(N, E, S, W))
+        self.sep3 = ttk.Separator(self.parent)
+        self.sep3.grid(row=8, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
+                       sticky=(N, E, S, W))
+
+
+class Sboxes:
+    """Отображает поля выбора значений"""
+
+    def __init__(self, parent):
+        self.parent = parent
+        self.width = 5
+        self.sbox1 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=100)
+        self.sbox1.insert(0, 1)
+        self.sbox1.grid(row=1, column=1, padx=Main.padx, pady=Main.pady)
+        self.sbox2 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=50)
+        self.sbox2.insert(0, 1)
+        self.sbox2.grid(row=2, column=1, padx=Main.padx, pady=Main.pady)
+
+
+class Optionmenu:
+    def __init__(self, parent, calculations):
+        self.parent = parent
+        self.variable = StringVar()
+        self.options = ["1 см", "2 см", "3 см"]
+        self.variable.set(self.options[0])
+        self.opt = ttk.OptionMenu(self.parent, self.variable, '', *self.options,
+                                  command=calculations.check_accurasy)
+        self.opt.grid(row=3, column=1, padx=Main.padx, pady=Main.pady)
 
 
 class Calculations:
@@ -15,68 +127,66 @@ class Calculations:
     """
 
     def __init__(self):
-        """Определяем текущее значение точности, отображенных строк,
-        списка отображаемых строк и значение погрешности
-        """
-        self.accuracy = 0.01
-        self.totalrows = 0
-        self.listrows = []
-        self.result = 0
+        self.accuracy = 0.01    # точность
+        self.totalrows = 0      # количество отображаемых строк/полей
+        self.listrows = []      # список строк/полей
+        self.result = 0         # результат рассчета погрешности
 
-    def set_row(self):
+    def set_row(self, sboxes):
         """Выполняет отображение необходимого количества строк для
         частей/помещений
         """
-        self.number_row_to_paste = self.totalrows + 7
+        number_row_to_paste = self.totalrows + 7  # номер row в grid(), в которое будет
+                                                  # добавляться следующаая строка/поле
         try:
-            self.row_add = int(sbox1.sbox.get())
+            row_add = int(sboxes.sbox1.get())   # количество строк/полей, которое нужно отразить
         except ValueError:
             return
-        if self.row_add < 1:
+        if row_add < 1:
             return
-        if self.row_add > self.totalrows:
-            for i in range(self.row_add - self.totalrows):
-                label10 = ttk.Label(frame2,
-                                    text=("{}".format(self.totalrows + i + 1)))
-                label10.grid(row=(self.number_row_to_paste + i), column=0,
+        if row_add > self.totalrows:
+            for i in range(row_add - self.totalrows):
+                label10 = ttk.Label(Fram.frame2,
+                                    text=("{}".format(totalrows + i + 1)))
+                label10.grid(row=(number_row_to_paste + i), column=0,
                              padx=0, pady=0, ipadx=40, sticky=W)
-                ent3 = Entries((self.number_row_to_paste + i), 0, E)
-                ent4 = Entries((self.number_row_to_paste + i), 1, W)
-                self.listrows.append((ent3, ent4, label10))
-            if self.row_add <= 14:
-                draw.configure(height=ent1.ent.winfo_height() * self.row_add,
+                ent3 = Entries((number_row_to_paste + i), 0, E)
+                ent4 = Entries((number_row_to_paste + i), 1, W)
+                listrows.append((ent3, ent4, label10))
+            if row_add <= 14:
+                draw.configure(height=ent1.ent.winfo_height() * row_add,
                                scrollregion=(0, 0, 0, 0))
             else:
                 draw.configure(height=310, scrollregion=(0, 0, 0,
-                                                         ent1.ent.winfo_height() * self.row_add))
-            self.totalrows = self.row_add
-            sep3.sep.grid(row=self.totalrows + 7, column=0, columnspan=4,
+                                                         ent1.ent.winfo_height() * row_add))
+            totalrows = row_add
+            sep3.sep.grid(row=totalrows + 7, column=0, columnspan=4,
                           padx=PADX, pady=PADY, sticky=EW)
-        elif self.row_add > self.totalrows:
+        elif row_add > self.totalrows:
             return
         else:
-            self.number_row_to_paste = self.totalrows - self.row_add
-            for i in range(self.totalrows - self.row_add):
+            number_row_to_paste = self.totalrows - row_add
+            for i in range(self.totalrows - row_add):
                 self.listrows[-1][0].ent.destroy()
                 self.listrows[-1][1].ent.destroy()
                 self.listrows[-1][2].destroy()
                 self.listrows.pop()
-            self.totalrows = self.row_add
-            sep3.sep.grid(row=self.totalrows + 7, column=0, columnspan=4,
-                          padx=PADX, pady=PADY, sticky=EW)
-            if self.row_add <= 14:
-                draw.configure(height=ent1.ent.winfo_height() * self.row_add,
+            totalrows = row_add
+            sep3.sep.grid(row=totalrows + 7, column=0, columnspan=4,
+                          padx=main.padx, pady=main.pady, sticky=EW)
+            if row_add <= 14:
+                draw.configure(height=ent1.ent.winfo_height() * row_add,
                                scrollregion=(0, 0, 0, 0))
             else:
                 draw.configure(height=310, scrollregion=(0, 0, 0,
-                                                         ent1.ent.winfo_height() * self.row_add))
+                                                         ent1.ent.winfo_height() * row_add))
 
-    def calc_result(self):
+    def calc_result(self, sboxes):
         """Производит рассчет погрешности и выводит полученное значение в
         соответствующей метке
         """
         try:
-            levels = int(sbox2.sbox.get())
+            levels = int(sboxes.sbox2.get())
         except ValueError:
             return
         if levels < 1:
@@ -99,12 +209,12 @@ class Calculations:
                 parameters.append(width ** 2 + height ** 2)
         except ValueError:
             return
-        self.result = Decimal('{}'.format(self.accuracy * sqrt(sum(parameters) * levels)))
-        self.result = self.result.quantize(Decimal("1.0"), ROUND_HALF_UP)
-        if self.result == 0.0:
+        result = Decimal('{}'.format(self.accuracy * sqrt(sum(parameters) * levels)))
+        result = result.quantize(Decimal("1.0"), ROUND_HALF_UP)
+        if result == 0.0:
             label9.lab["text"] = "0,1 кв.м."
         else:
-            label9.lab["text"] = (str(self.result) + " " + "кв.м.")
+            label9.lab["text"] = (str(result) + " " + "кв.м.")
 
     def check_accurasy(self, event):
         """Регулирует значение кривизны стен"""
@@ -132,7 +242,7 @@ class Calculations:
             coords[i] = coords[i].rstrip('\n')
             coords[i] = coords[i].split()
         coords.insert(0, coords[-1])  # дополняем список первым и
-        coords.append(coords[1])  # последним элементом
+        coords.append(coords[1])      # последним элементом
         tmp_list = []
         for i in range(1, len(coords) - 1):
             tmp_list.append((float(coords[i - 1][1]) - float(coords[i + 1][1])) ** 2 +
@@ -145,123 +255,42 @@ class Calculations:
             label9.lab["text"] = (str(result) + " " + "кв.м.")
 
 
-class Buttons:
-    """Отображает кнопки"""
+class Main:
+    padx = 8
+    pady = 8
 
-    def __init__(self, text, command, row, column, padx=PADX, pady=PADY):
-        self.but = ttk.Button(frame1, text=text, command=command)
-        self.but.grid(row=row, column=column, padx=padx,
-                      pady=pady)
+    def __init__(self):
+        self.root = ThemedTk(theme="itft1")
+        self.root.title("Расчет СКП площади")
 
+        calculations = Calculations(sboxes=sboxes)
+        frames = Frames()
+        buttons = Buttons(parent=frames.frame1, calculations=calculations)
+        lables = Lables(parent1=frames.frame1, parent2=frames.frame2, calculations=calculations)
+        entries = Entries(parent=frames.frame2, calculations=calculations)
+        separators = Separators(parent=frames.frame1)
+        sboxes = Sboxes(parent=frames.frame1)
+        optionmenu = Optionmenu(parent=frames.frame1, calculations=calculations)
 
-class Lables:
-    """Отображает метки"""
+        self.centering()
+        self.root.mainloop()
 
-    def __init__(self, text, row, column, sticky=None, columnspan=None,
-                 padx=PADX, pady=PADY, font=None):
-        self.lab = ttk.Label(frame1, text=text, font=font)
-        self.lab.grid(row=row, column=column,
-                      columnspan=columnspan, padx=padx,
-                      pady=pady, sticky=sticky)
-
-
-class Entries:
-    """Отображает поля"""
-
-    def __init__(self, row, column, sticky):
-        self.ent = ttk.Entry(frame2, width=12)
-        self.ent.grid(row=row, column=column,
-                      sticky=sticky)
-
-
-class Separators:
-    """Отображает разделительные линии"""
-
-    def __init__(self, row, column, rowspan=None, columnspan=None,
-                 padx=None, pady=None, orient=None):
-        self.sep = ttk.Separator(frame1, orient=orient)
-        self.sep.grid(row=row, column=column,
-                      rowspan=rowspan, columnspan=columnspan,
-                      padx=padx, pady=pady, sticky=(N, E, S, W))
+    def centering(self):
+        self.root.update_idletasks()
+        sizes = self.root.geometry()
+        sizes = sizes.split('+')
+        sizes = sizes[0].split('x')
+        width_root = int(sizes[0])
+        height_root = int(sizes[1])
+        width = self.root.winfo_screenwidth()
+        height = self.root.winfo_screenheight()
+        width = width // 2
+        height = height // 2
+        width = width - width_root // 2
+        height = height - height_root // 2
+        self.root.geometry('+{}+{}'.format(width, height))
+        self.root.resizable(False, False)
 
 
-class Sboxes:
-    """Отображает поля выбора значений"""
-
-    def __init__(self, from_, to, row, column, padx=PADX, pady=PADY):
-        self.sbox = ttk.Spinbox(frame1, width=5, from_=from_,
-                                to=to)
-        self.sbox.insert(0, 1)
-        self.sbox.grid(row=row, column=column, padx=padx,
-                       pady=pady)
-
-
-root = ThemedTk(theme="itft1")
-root.title("Расчет СКП площади")
-
-table = Calculations()
-
-frame1 = ttk.Frame()
-frame1.grid(sticky=(N, E, S, W))
-
-draw = Canvas(frame1, width=173, height=20, bd=0, highlightthickness=0)
-draw.config(scrollregion=draw.bbox("ALL"))
-draw.sbar = Scrollbar(frame1, orient=VERTICAL)
-frame2 = ttk.Frame(draw)
-draw.create_window(0, 0, window=frame2, width=173, anchor=N + W)
-
-draw['yscrollcommand'] = draw.sbar.set
-draw.sbar['command'] = draw.yview
-draw.sbar.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
-draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
-
-label1 = Lables("Количество частей/помещений:", 1, 0, E)
-label2 = Lables("Количество этажей:", 2, 0, E)
-label3 = Lables("Кривизна стен:", 3, 0, E)
-label4 = Lables("Размеры частей/помещений:", 5, 0, SE, columnspan=2, pady=5)
-label5 = Lables("Длина, м", 6, 0, SE, pady=0)
-label6 = Lables("Ширина, м", 6, 1, SW, pady=0)
-label7 = ttk.Label(frame2, text="1")
-label7.grid(row=7, column=0, padx=0, pady=0, ipadx=40, sticky=W)
-label8 = Lables("Результат:", 5, 3, font=('Sans', '10', 'bold'))
-label9 = Lables((str(table.result) + " " + "кв.м."), 6, 3,
-                font=('Sans', '15', 'bold'))
-
-button1 = Buttons("Отобразить", table.set_row, 1, 3)
-button2 = Buttons("Рассчитать", table.calc_result, 2, 3)
-button3 = Buttons("S застройки", table.calc_built_up, 3, 3)
-
-sbox1 = Sboxes(1, 100, 1, 1)
-sbox2 = Sboxes(1, 50, 2, 1)
-
-variable = StringVar()
-options = ["1 см", "2 см", "3 см"]
-variable.set(options[0])
-opt = ttk.OptionMenu(frame1, variable, '', *options, command=table.check_accurasy)
-opt.grid(row=3, column=1, padx=PADX, pady=PADY)
-
-ent1 = Entries(7, 0, E)
-ent2 = Entries(7, 1, W)
-table.listrows.append((ent1, ent2))
-table.totalrows = 1
-
-sep1 = Separators(0, 2, rowspan=100, orient=VERTICAL)
-sep2 = Separators(4, 0, columnspan=4, padx=PADX, pady=PADY)
-sep3 = Separators(8, 0, columnspan=4, padx=PADX, pady=PADY)
-
-root.update_idletasks()
-s = root.geometry()
-s = s.split('+')
-s = s[0].split('x')
-width_root = int(s[0])
-height_root = int(s[1])
-w = root.winfo_screenwidth()
-h = root.winfo_screenheight()
-w = w // 2
-h = h // 2
-w = w - width_root // 2
-h = h - height_root // 2
-root.geometry('+{}+{}'.format(w, h))
-root.resizable(False, False)
-
-root.mainloop()
+if __name__ == "__main__":
+    Main()
