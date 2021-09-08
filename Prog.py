@@ -14,11 +14,11 @@ class Frames:
         self.frame1.grid(sticky=(N, E, S, W))
 
         self.draw = Canvas(self.frame1, width=173, height=20, bd=0, highlightthickness=0)
-        self.draw.config(scrollregion=self.draw.bbox("ALL"))
-        self.draw.sbar = Scrollbar(self.frame1, orient=VERTICAL)
         self.frame2 = ttk.Frame(self.draw)
-        self.draw.create_window(0, 0, window=self.frame2, width=173, anchor=N + W)
+        self.draw.config(scrollregion=(0, 0, 0, 20))
+        self.draw.sbar = ttk.Scrollbar(self.frame1, orient=VERTICAL)
 
+        self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
         self.draw['yscrollcommand'] = self.draw.sbar.set
         self.draw.sbar['command'] = self.draw.yview
         self.draw.sbar.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
@@ -175,7 +175,7 @@ class Main:
                 self.listrows.append((ent3, ent4, label10))
             if row_add <= 14:
                 self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
-                                      scrollregion=(0, 0, 0, 0))
+                                      scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
             else:
                 self.frames.draw.configure(height=310,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
@@ -198,7 +198,7 @@ class Main:
                                  padx=Main.padx, pady=Main.pady, sticky=EW)
             if row_add <= 14:
                 self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
-                                      scrollregion=(0, 0, 0, 0))
+                                      scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
             else:
                 self.frames.draw.configure(height=310,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
