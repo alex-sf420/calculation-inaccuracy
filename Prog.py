@@ -152,41 +152,26 @@ class ToolTips:
         self.widget.bind("<Leave>", self.leave)
         self.widget.bind("<ButtonPress>", self.leave)
         self.id = None
-        self.tw = None
+        self.tip = None
 
     def enter(self, event=None):
-        self.schedule()
+        self.id = self.widget.after(self.waittime, self.showtip)
 
     def leave(self, event=None):
-        self.unschedule()
-        self.hidetip()
-
-    def schedule(self):
-        self.unschedule()
-        self.id = self.widget.after(self.waittime, self.showtip)
-    #
-    def unschedule(self):
-        id = self.id
-        self.id = None
-        if id:
-            self.widget.after_cancel(id)
-
-    def hidetip(self):
-        tw = self.tw
-        self.tw = None
-        if tw:
-            tw.destroy()
+        self.widget.after_cancel(self.id)
+        if self.tip:
+            self.tip.destroy()
 
     def showtip(self, event=None):
-        x, y, cx, cy = self.widget.bbox("insert")
+        x, y = self.widget.bbox("insert")[:2]
         x += self.widget.winfo_rootx() + 45
         y += self.widget.winfo_rooty() + 30
-        self.tw = Toplevel(self.widget)
-        self.tw.wm_overrideredirect(True)
-        self.tw.wm_geometry("+%d+%d" % (x, y))
-        label = Label(self.tw, text=self.text, justify='left',
-                       background="#ffffff", relief='solid', borderwidth=1,
-                       wraplength = self.wraplength)
+        self.tip = Toplevel(self.widget)
+        self.tip.wm_overrideredirect(True)
+        self.tip.wm_geometry("+%d+%d" % (x, y))
+        label = Label(self.tip, text=self.text, justify='left',
+                      background="#ffffff", relief='solid', borderwidth=1,
+                      wraplength = self.wraplength)
         label.pack(ipadx=1)
 
 
