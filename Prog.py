@@ -143,26 +143,47 @@ class ToolTips:
     """
     Отображает всплывающие подсказки
     """
-    def __init__(self, widget, text='widget info'):
-        self.waittime = 1000
-        self.wraplength = 180
-        self.widget = widget
-        self.text = text
-        self.widget.bind("<Enter>", self.enter)
-        self.widget.bind("<Leave>", self.leave)
-        self.widget.bind("<ButtonPress>", self.leave)
-        self.id = None
-        self.tip = None
+    def __init__(self, widget=None, text='widget info'):
+        if widget:
+            self.waittime = 1000
+            self.wraplength = 180
+            self.widget = widget
+            self.text = text
+            self.widget.bind("<Enter>", self.enter)
+            self.widget.bind("<Leave>", self.leave)
+            self.widget.bind("<ButtonPress>", self.leave)
+            self.id = None
+            self.tip = None
 
-    def enter(self, event=None):
+    @staticmethod
+    def create_tips(main):
+        ToolTips(main.buttons.but1, 'Отображает количество строк раздела '
+                                    '"Размеры помещений" на основании '
+                                    'значения указанного в поле '
+                                    '"Количество пар длина/ширина"')
+        ToolTips(main.buttons.but2, 'Выводит результат рассчета СКП площади на '
+                                    'основании данных раздела "Размеры помещений" '
+                                    'с учетом заданного количества этажей и '
+                                    'кривизны стен')
+        ToolTips(main.buttons.but3, 'Выводит результат рассчета СКП площади'
+                                    'застройки для выбранного каталога координат '
+                                    'в формате .txt')
+        ToolTips(main.sboxes.sbox1, 'Укажите количество пар длина/ширина помещений')
+        ToolTips(main.sboxes.sbox2, 'Укажите количество этажей объекта, в т.ч. подземных')
+        ToolTips(main.optionmenu.opt, 'Выберите степень кривизны стен:\n'
+                                      '1 см - незначительная кривизна;\n'
+                                      '2 см - средняя кривизна;\n'
+                                      '3 см - существенная кривизна')
+
+    def enter(self, event):
         self.id = self.widget.after(self.waittime, self.showtip)
 
-    def leave(self, event=None):
+    def leave(self, event):
         self.widget.after_cancel(self.id)
         if self.tip:
             self.tip.destroy()
 
-    def showtip(self, event=None):
+    def showtip(self):
         x, y = self.widget.bbox("insert")[:2]
         x += self.widget.winfo_rootx() + 45
         y += self.widget.winfo_rooty() + 30
@@ -198,23 +219,7 @@ class Main:
         self.separators = Separators(parent=self.frames.frame1)
         self.sboxes = Sboxes(parent=self.frames.frame1)
         self.optionmenu = Optionmenu(parent=self.frames.frame1, main=self)
-        ToolTips(self.buttons.but1, 'Отображает количество строк раздела '
-                                    '"Размеры помещений" на основании '
-                                    'значения указанного в поле '
-                                    '"Количество пар длина/ширина"')
-        ToolTips(self.buttons.but2, 'Выводит результат рассчета СКП площади на '
-                                    'основании данных раздела "Размеры помещений" '
-                                    'с учетом заданного количества этажей и '
-                                    'кривизны стен')
-        ToolTips(self.buttons.but3, 'Выводит результат рассчета СКП площади'
-                                    'застройки для выбранного каталога координат '
-                                    'в формате .txt')
-        ToolTips(self.sboxes.sbox1, 'Укажите количество пар длина/ширина помещений')
-        ToolTips(self.sboxes.sbox2, 'Укажите количество этажей объекта, в т.ч. подземных')
-        ToolTips(self.optionmenu.opt, 'Выберите степень кривизны стен:\n'
-                                      '1 см - незначительная кривизна;\n'
-                                      '2 см - средняя кривизна;\n'
-                                      '3 см - существенная кривизна')
+        ToolTips().create_tips(main = self)
 
     def set_row(self):
         """
