@@ -63,7 +63,7 @@ class Lables:
         self.label5 = ttk.Label(self.parent1, text="Длина, м")
         self.label5.grid(row=6, column=0, sticky=SE, padx=Main.padx)
         self.label6 = ttk.Label(self.parent1, text="Ширина, м")
-        self.label6.grid(row=6, column=1, sticky=SW, padx=Main.padx)
+        self.label6.grid(row=6, column=1, sticky=S, padx=Main.padx)
         self.label8 = ttk.Label(self.parent1, text="Результат:", font=('Sans', '11', 'bold'))
         self.label8.grid(row=5, column=3, sticky=S, padx=Main.padx, pady=Main.pady)
         self.label9 = ttk.Label(self.parent1, text=(str(main.result) + " " + "кв.м."),
@@ -81,7 +81,7 @@ class Entries:
 
     def __init__(self, parent, main):
         self.parent = parent
-        self.width = 10
+        self.width = 11
         for i in range(3):
             label = ttk.Label(self.parent, text=i+1)
             label.grid(row=7+i, column=0, sticky=W, ipadx=40)
@@ -104,7 +104,7 @@ class Separators:
     def __init__(self, parent):
         self.parent = parent
         self.sep1 = ttk.Separator(self.parent, orient=VERTICAL)
-        self.sep1.grid(row=0, column=2, rowspan=100, sticky=(N, E, S, W))
+        self.sep1.grid(row=0, column=2, rowspan=11, sticky=(N, E, S, W))
         self.sep2 = ttk.Separator(self.parent)
         self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
                        sticky=(N, E, S, W))
@@ -147,14 +147,11 @@ class Optionmenu:
 
 class TextArea:
     def __init__(self, parent, main):
-        text1 = Text(parent, width=32, height=4)
-        text1.grid(row=11, column=0, columnspan=2, padx=15, pady=2,)
-        text1.insert(1.0, '=')
-
-        sbar2 = ttk.Scrollbar(parent, command=text1.yview)
-        sbar2.grid(row=11, column=1, sticky=N + S + E, padx=0, pady=2)
-
-        text1.config(yscrollcommand=sbar2.set)
+        self.text1 = Text(parent, width=45, height=4)
+        self.text1.grid(row=11, column=0, columnspan=4, padx=15, pady=2,)
+        sbar2 = ttk.Scrollbar(parent, command= self.text1.yview)
+        sbar2.grid(row=11, column=3, sticky=N + S + E, padx=0, pady=2)
+        self.text1.config(yscrollcommand=sbar2.set)
 
 
 class ToolTips:
@@ -295,6 +292,8 @@ class Main:
         Производит рассчет погрешности и выводит полученное значение в
         соответствующей метке
         """
+        self.text_area.text1.delete(1.0, END)
+        formula = f"= {self.accuracy} * √("
         try:
             levels = int(self.sboxes.sbox2.get())
         except ValueError:
@@ -317,6 +316,7 @@ class Main:
                     height = height.replace(",", ".")
                 height = float(height)
                 parameters.append(width ** 2 + height ** 2)
+                formula += f'({width}^2 + {height}^2)+'
         except ValueError:
             return
         result = Decimal('{}'.format(self.accuracy * sqrt(sum(parameters) * levels)))
@@ -325,6 +325,8 @@ class Main:
             self.lables.label9["text"] = "0,1 кв.м."
         else:
             self.lables.label9["text"] = (str(result) + " " + "кв.м.")
+        formula = formula[:-1] + f') = {result}'
+        self.text_area.text1.insert(1.0, formula)
 
     def check_accurasy(self, event):
         """
