@@ -43,7 +43,7 @@ class Buttons:
         self.but3.grid(row=2, column=3, padx=Main.padx, pady=Main.pady)
 
 
-class Lables:
+class Labels:
     """
     Отображает метки, динамическая перерисовка производится
     в методе set_row класса Main
@@ -61,7 +61,7 @@ class Lables:
         self.label4 = ttk.Label(self.parent1, text="Размеры помещений:")
         self.label4.grid(row=5, column=0, columnspan=2, sticky=E, padx=21, pady=5)
         self.label5 = ttk.Label(self.parent1, text="Длина, м")
-        self.label5.grid(row=6, column=0, sticky=SE, padx=Main.padx)
+        self.label5.grid(row=6, column=0, sticky=SE)
         self.label6 = ttk.Label(self.parent1, text="Ширина, м")
         self.label6.grid(row=6, column=1, sticky=S, padx=Main.padx)
         self.label8 = ttk.Label(self.parent1, text="Результат:", font=('Sans', '11', 'bold'))
@@ -84,7 +84,7 @@ class Entries:
         self.width = 11
         for i in range(3):
             label = ttk.Label(self.parent, text=i+1)
-            label.grid(row=7+i, column=0, sticky=W, ipadx=40)
+            label.grid(row=7+i, column=0, sticky=W, ipadx=43)
             ent1 = ttk.Entry(self.parent, width=self.width)
             ent1.grid(row=7+i, column=0, sticky=E)
             ent1.bind("<Return>", main.calc_result)
@@ -226,7 +226,7 @@ class Main:
         self.result = 0  # результат рассчета погрешности
         self.frames = Frames()
         self.buttons = Buttons(parent=self.frames.frame1, main=self)
-        self.lables = Lables(parent1=self.frames.frame1, parent2=self.frames.frame2, main=self)
+        self.labels = Labels(parent1=self.frames.frame1, parent2=self.frames.frame2, main=self)
         self.entries = Entries(parent=self.frames.frame2, main=self)
         self.separators = Separators(parent=self.frames.frame1)
         self.sboxes = Sboxes(parent=self.frames.frame1, main=self)
@@ -322,9 +322,9 @@ class Main:
         result = Decimal('{}'.format(self.accuracy * sqrt(sum(parameters) * levels)))
         result = result.quantize(Decimal("1.0"), ROUND_HALF_UP)
         if result == 0.0:
-            self.lables.label9["text"] = "0,1 кв.м."
+            self.labels.label9["text"] = "0,1 кв.м."
         else:
-            self.lables.label9["text"] = (str(result) + " " + "кв.м.")
+            self.labels.label9["text"] = (str(result) + " " + "кв.м.")
         formula = formula[:-1] + f') = {result}'
         self.text_area.text1.insert(1.0, formula)
 
@@ -365,9 +365,9 @@ class Main:
         result = Decimal('{}'.format(0.35 * 0.1 * sqrt(sum(tmp_list))))
         result = result.quantize(Decimal("1.0"), ROUND_HALF_UP)
         if result == 0.0:
-            self.lables.label9["text"] = "0,1 кв.м."
+            self.labels.label9["text"] = "0,1 кв.м."
         else:
-            self.lables.label9["text"] = (str(result) + " " + "кв.м.")
+            self.labels.label9["text"] = (str(result) + " " + "кв.м.")
 
 
 class Start:
