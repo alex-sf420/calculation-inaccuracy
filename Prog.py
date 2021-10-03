@@ -106,7 +106,7 @@ class Separators:
         self.sep1 = ttk.Separator(self.parent, orient=VERTICAL)
         self.sep1.grid(row=0, column=2, rowspan=11, sticky=(N, E, S, W))
         self.sep2 = ttk.Separator(self.parent)
-        self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
+        self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx,
                        sticky=(N, E, S, W))
         self.sep3 = ttk.Separator(self.parent)
         self.sep3.grid(row=12, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
