@@ -18,12 +18,12 @@ class Frames:
         self.draw = Canvas(self.frame1, width=173, height=20, bd=0, highlightthickness=0)
         self.frame2 = ttk.Frame(self.draw)
         self.draw.config(scrollregion=(0, 0, 0, 20))
-        self.draw.sbar = ttk.Scrollbar(self.frame1, orient=VERTICAL)
+        self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
 
         self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
-        self.draw['yscrollcommand'] = self.draw.sbar.set
-        self.draw.sbar['command'] = self.draw.yview
-        self.draw.sbar.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
+        self.draw['yscrollcommand'] = self.draw.sbar1.set
+        self.draw.sbar1['command'] = self.draw.yview
+        self.draw.sbar1.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
         self.draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
 
 
@@ -71,6 +71,8 @@ class Lables:
         self.label9 = ttk.Label(self.parent1, text=(str(main.result) + " " + "кв.м."),
                                 font=('Sans', '15', 'bold'))
         self.label9.grid(row=6, column=3, padx=0, pady=0)
+        self.label10 = ttk.Label(self.parent1, text="Формула:")
+        self.label10.grid(row=8, column=0, sticky=W, padx=15, pady=2)
         
 
 class Entries:
@@ -107,7 +109,7 @@ class Separators:
         self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
                        sticky=(N, E, S, W))
         self.sep3 = ttk.Separator(self.parent)
-        self.sep3.grid(row=8, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
+        self.sep3.grid(row=10, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
                        sticky=(N, E, S, W))
 
 
@@ -141,6 +143,18 @@ class Optionmenu:
         self.opt = ttk.OptionMenu(self.parent, self.variable, '', *self.options,
                                   command=main.check_accurasy)
         self.opt.grid(row=3, column=1, padx=Main.padx, pady=Main.pady)
+
+
+class TextArea:
+    def __init__(self, parent, main):
+        text1 = Text(parent, width=32, height=4)
+        text1.grid(row=9, column=0, columnspan=2, padx=15, pady=2,)
+        text1.insert(1.0, '=')
+
+        sbar2 = ttk.Scrollbar(parent, command=text1.yview)
+        sbar2.grid(row=9, column=1, sticky=N + S + E, padx=0, pady=2)
+
+        text1.config(yscrollcommand=sbar2.set)
 
 
 class ToolTips:
@@ -220,6 +234,7 @@ class Main:
         self.separators = Separators(parent=self.frames.frame1)
         self.sboxes = Sboxes(parent=self.frames.frame1, main=self)
         self.optionmenu = Optionmenu(parent=self.frames.frame1, main=self)
+        self.text_area = TextArea(parent=self.frames.frame1, main=self)
         ToolTips().create_tips(main = self)
 
     def set_row(self, event=None):
@@ -238,9 +253,9 @@ class Main:
             return
         if row_add > self.totalrows:
             for i in range(row_add - self.totalrows):
-                label10 = ttk.Label(self.frames.frame2,
+                label11 = ttk.Label(self.frames.frame2,
                                     text=("{}".format(self.totalrows + i + 1)))
-                label10.grid(row=(self.number_row_to_paste + i), column=0,
+                label11.grid(row=(self.number_row_to_paste + i), column=0,
                              padx=0, pady=0, ipadx=40, sticky=W)
                 ent3 = ttk.Entry(self.frames.frame2, width=self.entries.width)
                 ent3.grid(row=(self.number_row_to_paste + i), column=0, sticky=E)
@@ -248,12 +263,12 @@ class Main:
                 ent4 = ttk.Entry(self.frames.frame2, width=self.entries.width)
                 ent4.grid(row=(self.number_row_to_paste + i), column=1, sticky=W)
                 ent4.bind("<Return>", self.calc_result)
-                self.listrows.append((ent3, ent4, label10))
-            if row_add <= 14:
+                self.listrows.append((ent3, ent4, label11))
+            if row_add <= 9:
                 self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
             else:
-                self.frames.draw.configure(height=310,
+                self.frames.draw.configure(height=210,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
 
             self.totalrows = row_add
@@ -272,11 +287,11 @@ class Main:
             self.totalrows = row_add
             self.separators.sep3.grid(row=self.totalrows + 7, column=0, columnspan=4,
                                  padx=Main.padx, pady=Main.pady, sticky=EW)
-            if row_add <= 14:
+            if row_add <= 9:
                 self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
             else:
-                self.frames.draw.configure(height=310,
+                self.frames.draw.configure(height=210,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
 
     def calc_result(self, event=None):
