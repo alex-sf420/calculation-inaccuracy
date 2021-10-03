@@ -84,8 +84,10 @@ class Entries:
         self.width = 10
         self.ent1 = ttk.Entry(self.parent, width=self.width)
         self.ent1.grid(row=7, column=0, sticky=E)
+        self.ent1.bind("<Return>", main.calc_result)
         self.ent2 = ttk.Entry(self.parent, width=self.width)
         self.ent2.grid(row=7, column=1, sticky=W)
+        self.ent2.bind("<Return>", main.calc_result)
 
         main.listrows.append((self.ent1, self.ent2))
         main.totalrows = 1
@@ -114,15 +116,17 @@ class Sboxes:
     Отображает поля выбора значений
     """
 
-    def __init__(self, parent):
+    def __init__(self, parent, main):
         self.parent = parent
         self.width = 5
         self.sbox1 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=100)
         self.sbox1.insert(0, 1)
         self.sbox1.grid(row=1, column=1, padx=Main.padx, pady=Main.pady)
+        self.sbox1.bind("<Return>", main.set_row)
         self.sbox2 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=50)
         self.sbox2.insert(0, 1)
         self.sbox2.grid(row=2, column=1, padx=Main.padx, pady=Main.pady)
+        self.sbox2.bind("<Return>", main.calc_result)
 
 
 class Optionmenu:
@@ -170,10 +174,7 @@ class ToolTips:
                                     'в формате .txt')
         ToolTips(main.sboxes.sbox1, 'Укажите количество пар длина/ширина помещений')
         ToolTips(main.sboxes.sbox2, 'Укажите количество этажей объекта, в т.ч. подземных')
-        ToolTips(main.optionmenu.opt, 'Выберите степень кривизны стен:\n'
-                                      '1 см - незначительная кривизна;\n'
-                                      '2 см - средняя кривизна;\n'
-                                      '3 см - существенная кривизна')
+        ToolTips(main.optionmenu.opt, 'Выберите степень кривизны стен')
 
     def enter(self, event):
         self.id = self.widget.after(self.waittime, self.showtip)
@@ -217,14 +218,14 @@ class Main:
         self.lables = Lables(parent1=self.frames.frame1, parent2=self.frames.frame2, main=self)
         self.entries = Entries(parent=self.frames.frame2, main=self)
         self.separators = Separators(parent=self.frames.frame1)
-        self.sboxes = Sboxes(parent=self.frames.frame1)
+        self.sboxes = Sboxes(parent=self.frames.frame1, main=self)
         self.optionmenu = Optionmenu(parent=self.frames.frame1, main=self)
         ToolTips().create_tips(main = self)
 
-    def set_row(self):
+    def set_row(self, event=None):
         """
         Выполняет отображение необходимого количества строк для
-        частей/помещений
+        пар длина/ширина
         """
 
         self.number_row_to_paste = self.totalrows + 7  # номер row в grid(), в которое будет
@@ -243,8 +244,10 @@ class Main:
                              padx=0, pady=0, ipadx=40, sticky=W)
                 ent3 = ttk.Entry(self.frames.frame2, width=self.entries.width)
                 ent3.grid(row=(self.number_row_to_paste + i), column=0, sticky=E)
+                ent3.bind("<Return>", self.calc_result)
                 ent4 = ttk.Entry(self.frames.frame2, width=self.entries.width)
                 ent4.grid(row=(self.number_row_to_paste + i), column=1, sticky=W)
+                ent4.bind("<Return>", self.calc_result)
                 self.listrows.append((ent3, ent4, label10))
             if row_add <= 14:
                 self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
@@ -276,7 +279,7 @@ class Main:
                 self.frames.draw.configure(height=310,
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
 
-    def calc_result(self):
+    def calc_result(self, event=None):
         """
         Производит рассчет погрешности и выводит полученное значение в
         соответствующей метке
@@ -361,11 +364,21 @@ class Start:
     def __init__(self):
         self.root = ThemedTk(theme="itft1")
         self.root.title("Расчет СКП площади")
-        
         self.main = Main(self)
-
         self.centering()
+        self.root.bind("<Key>", self.on_key_release)
+        self.root.bind("<Key>", self.on_key_release)
         self.root.mainloop()
+
+    @staticmethod
+    def on_key_release(event):
+        ctrl = event.state != 0
+        if event.keycode == 88 and ctrl and event.keysym.lower() != "x":
+            event.widget.event_generate("<<Cut>>")
+        if event.keycode == 86 and ctrl and event.keysym.lower() != "v":
+            event.widget.event_generate("<<Paste>>")
+        if event.keycode == 67 and ctrl and event.keysym.lower() != "c":
+            event.widget.event_generate("<<Copy>>")
 
     def centering(self):
         self.root.update_idletasks()
