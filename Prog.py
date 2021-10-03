@@ -36,11 +36,11 @@ class Buttons:
         self.parent = parent
 
         self.but1 = ttk.Button(self.parent, text="Отобразить", command=main.set_row)
-        self.but1.grid(row=1, column=3, padx=Main.padx)
+        self.but1.grid(row=3, column=3, padx=Main.padx, pady=Main.pady)
         self.but2 = ttk.Button(self.parent, text="Рассчитать", command=main.calc_result)
-        self.but2.grid(row=2, column=3, padx=Main.padx)
+        self.but2.grid(row=1, column=3, padx=Main.padx, pady=Main.pady)
         self.but3 = ttk.Button(self.parent, text="S застройки", command=main.calc_built_up)
-        self.but3.grid(row=3, column=3, padx=Main.padx)
+        self.but3.grid(row=2, column=3, padx=Main.padx, pady=Main.pady)
 
 
 class Lables:
@@ -53,11 +53,11 @@ class Lables:
         self.parent1 = parent1
         self.parent2 = parent2
         self.label1 = ttk.Label(self.parent1, text="Количество пар длина/ширина:")
-        self.label1.grid(row=1, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
+        self.label1.grid(row=3, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
         self.label2 = ttk.Label(self.parent1, text="Количество этажей:")
         self.label2.grid(row=2, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
         self.label3 = ttk.Label(self.parent1, text="Кривизна стен:")
-        self.label3.grid(row=3, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
+        self.label3.grid(row=1, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
         self.label4 = ttk.Label(self.parent1, text="Размеры помещений:")
         self.label4.grid(row=5, column=0, columnspan=2, sticky=E, padx=21, pady=5)
         self.label5 = ttk.Label(self.parent1, text="Длина, м")
@@ -73,7 +73,7 @@ class Lables:
         self.label9.grid(row=6, column=3, padx=0, pady=0)
         self.label10 = ttk.Label(self.parent1, text="Формула:")
         self.label10.grid(row=8, column=0, sticky=W, padx=15, pady=2)
-        
+
 
 class Entries:
     """
@@ -121,9 +121,9 @@ class Sboxes:
     def __init__(self, parent, main):
         self.parent = parent
         self.width = 5
-        self.sbox1 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=100)
-        self.sbox1.insert(0, 1)
-        self.sbox1.grid(row=1, column=1, padx=Main.padx, pady=Main.pady)
+        self.sbox1 = ttk.Spinbox(self.parent, width=self.width, from_=3, to=100)
+        self.sbox1.insert(0, 3)
+        self.sbox1.grid(row=3, column=1, padx=Main.padx, pady=Main.pady)
         self.sbox1.bind("<Return>", main.set_row)
         self.sbox2 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=50)
         self.sbox2.insert(0, 1)
@@ -142,7 +142,7 @@ class Optionmenu:
         self.variable.set(self.options[0])
         self.opt = ttk.OptionMenu(self.parent, self.variable, '', *self.options,
                                   command=main.check_accurasy)
-        self.opt.grid(row=3, column=1, padx=Main.padx, pady=Main.pady)
+        self.opt.grid(row=1, column=1, padx=Main.padx, pady=Main.pady)
 
 
 class TextArea:
@@ -188,7 +188,7 @@ class ToolTips:
                                     'в формате .txt')
         ToolTips(main.sboxes.sbox1, 'Укажите количество пар длина/ширина помещений')
         ToolTips(main.sboxes.sbox2, 'Укажите количество этажей объекта, в т.ч. подземных')
-        ToolTips(main.optionmenu.opt, 'Выберите степень кривизны стен')
+        ToolTips(main.optionmenu.opt, 'Выберите значение кривизны стен')
 
     def enter(self, event):
         self.id = self.widget.after(self.waittime, self.showtip)
@@ -219,7 +219,7 @@ class Main:
 
     padx = 8
     pady = 8
-    
+
     def __init__(self, parent):
         self.parent = parent
         self.number_row_to_paste = 0
@@ -272,8 +272,6 @@ class Main:
                                       scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
 
             self.totalrows = row_add
-            self.separators.sep3.grid(row=self.totalrows + 7, column=0, columnspan=4,
-                                 padx=Main.padx, pady=Main.pady, sticky=EW)
 
         elif row_add > self.totalrows:
             return
@@ -381,12 +379,12 @@ class Start:
         self.root.title("Расчет СКП площади")
         self.main = Main(self)
         self.centering()
-        self.root.bind("<Key>", self.on_key_release)
-        self.root.bind("<Key>", self.on_key_release)
+        self.root.bind("<Key>", self.hot_key_on_rus)
+        self.root.bind("<Key>", self.hot_key_on_rus)
         self.root.mainloop()
 
     @staticmethod
-    def on_key_release(event):
+    def hot_key_on_rus(event):
         ctrl = event.state != 0
         if event.keycode == 88 and ctrl and event.keysym.lower() != "x":
             event.widget.event_generate("<<Cut>>")
