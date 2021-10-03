@@ -59,7 +59,7 @@ class Labels:
         self.label3 = ttk.Label(self.parent1, text="Кривизна стен:")
         self.label3.grid(row=1, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
         self.label4 = ttk.Label(self.parent1, text="Размеры помещений:")
-        self.label4.grid(row=5, column=0, columnspan=2, sticky=E, padx=21, pady=5)
+        self.label4.grid(row=5, column=0, columnspan=2, sticky=E, padx=16, pady=5)
         self.label5 = ttk.Label(self.parent1, text="Длина, м")
         self.label5.grid(row=6, column=0, sticky=SE)
         self.label6 = ttk.Label(self.parent1, text="Ширина, м")
