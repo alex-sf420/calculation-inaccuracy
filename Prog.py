@@ -15,7 +15,7 @@ class Frames:
         self.frame1 = ttk.Frame()
         self.frame1.grid(sticky=(N, E, S, W))
 
-        self.draw = Canvas(self.frame1, width=173, height=60, bd=0, highlightthickness=0)
+        self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
         self.frame2 = ttk.Frame(self.draw)
         self.draw.config(scrollregion=(0, 0, 0, 20))
         self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
