@@ -15,7 +15,7 @@ class Frames:
         self.frame1 = ttk.Frame()
         self.frame1.grid(sticky=(N, E, S, W))
 
-        self.draw = Canvas(self.frame1, width=173, height=20, bd=0, highlightthickness=0)
+        self.draw = Canvas(self.frame1, width=173, height=60, bd=0, highlightthickness=0)
         self.frame2 = ttk.Frame(self.draw)
         self.draw.config(scrollregion=(0, 0, 0, 20))
         self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
@@ -64,15 +64,13 @@ class Lables:
         self.label5.grid(row=6, column=0, sticky=SE, padx=Main.padx)
         self.label6 = ttk.Label(self.parent1, text="Ширина, м")
         self.label6.grid(row=6, column=1, sticky=SW, padx=Main.padx)
-        self.label7 = ttk.Label(self.parent2, text="1")
-        self.label7.grid(row=7, column=0, sticky=W, ipadx=40)
         self.label8 = ttk.Label(self.parent1, text="Результат:", font=('Sans', '11', 'bold'))
         self.label8.grid(row=5, column=3, sticky=S, padx=Main.padx, pady=Main.pady)
         self.label9 = ttk.Label(self.parent1, text=(str(main.result) + " " + "кв.м."),
                                 font=('Sans', '15', 'bold'))
         self.label9.grid(row=6, column=3, padx=0, pady=0)
         self.label10 = ttk.Label(self.parent1, text="Формула:")
-        self.label10.grid(row=8, column=0, sticky=W, padx=15, pady=2)
+        self.label10.grid(row=10, column=0, sticky=W, padx=15, pady=2)
 
 
 class Entries:
@@ -84,15 +82,17 @@ class Entries:
     def __init__(self, parent, main):
         self.parent = parent
         self.width = 10
-        self.ent1 = ttk.Entry(self.parent, width=self.width)
-        self.ent1.grid(row=7, column=0, sticky=E)
-        self.ent1.bind("<Return>", main.calc_result)
-        self.ent2 = ttk.Entry(self.parent, width=self.width)
-        self.ent2.grid(row=7, column=1, sticky=W)
-        self.ent2.bind("<Return>", main.calc_result)
-
-        main.listrows.append((self.ent1, self.ent2))
-        main.totalrows = 1
+        for i in range(3):
+            label = ttk.Label(self.parent, text=i+1)
+            label.grid(row=7+i, column=0, sticky=W, ipadx=40)
+            ent1 = ttk.Entry(self.parent, width=self.width)
+            ent1.grid(row=7+i, column=0, sticky=E)
+            ent1.bind("<Return>", main.calc_result)
+            ent2 = ttk.Entry(self.parent, width=self.width)
+            ent2.grid(row=7+i, column=1, sticky=W)
+            ent2.bind("<Return>", main.calc_result)
+            main.listrows.append((ent1, ent2, label))
+        main.totalrows = 3
 
 
 class Separators:
@@ -109,7 +109,7 @@ class Separators:
         self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
                        sticky=(N, E, S, W))
         self.sep3 = ttk.Separator(self.parent)
-        self.sep3.grid(row=10, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
+        self.sep3.grid(row=12, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
                        sticky=(N, E, S, W))
 
 
@@ -148,11 +148,11 @@ class Optionmenu:
 class TextArea:
     def __init__(self, parent, main):
         text1 = Text(parent, width=32, height=4)
-        text1.grid(row=9, column=0, columnspan=2, padx=15, pady=2,)
+        text1.grid(row=11, column=0, columnspan=2, padx=15, pady=2,)
         text1.insert(1.0, '=')
 
         sbar2 = ttk.Scrollbar(parent, command=text1.yview)
-        sbar2.grid(row=9, column=1, sticky=N + S + E, padx=0, pady=2)
+        sbar2.grid(row=11, column=1, sticky=N + S + E, padx=0, pady=2)
 
         text1.config(yscrollcommand=sbar2.set)
 
@@ -265,11 +265,11 @@ class Main:
                 ent4.bind("<Return>", self.calc_result)
                 self.listrows.append((ent3, ent4, label11))
             if row_add <= 9:
-                self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
-                                      scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
+                self.frames.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
+                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
             else:
                 self.frames.draw.configure(height=210,
-                                      scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
+                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
 
             self.totalrows = row_add
 
@@ -283,14 +283,12 @@ class Main:
                 self.listrows[-1][2].destroy()
                 self.listrows.pop()
             self.totalrows = row_add
-            self.separators.sep3.grid(row=self.totalrows + 7, column=0, columnspan=4,
-                                 padx=Main.padx, pady=Main.pady, sticky=EW)
             if row_add <= 9:
-                self.frames.draw.configure(height=self.entries.ent1.winfo_height() * row_add,
-                                      scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
+                self.frames.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
+                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
             else:
                 self.frames.draw.configure(height=210,
-                                      scrollregion=(0, 0, 0, self.entries.ent1.winfo_height() * row_add))
+                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
 
     def calc_result(self, event=None):
         """
