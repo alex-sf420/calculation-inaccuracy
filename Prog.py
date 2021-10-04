@@ -123,11 +123,11 @@ class Sboxes:
         self.width = 5
         self.sbox1 = ttk.Spinbox(self.parent, width=self.width, from_=3, to=100)
         self.sbox1.insert(0, 3)
-        self.sbox1.grid(row=3, column=1, padx=Main.padx, pady=Main.pady)
+        self.sbox1.grid(row=3, column=1, sticky=W, padx=Main.padx, pady=Main.pady)
         self.sbox1.bind("<Return>", main.set_row)
         self.sbox2 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=50)
         self.sbox2.insert(0, 1)
-        self.sbox2.grid(row=2, column=1, padx=Main.padx, pady=Main.pady)
+        self.sbox2.grid(row=2, column=1,sticky=W, padx=Main.padx, pady=Main.pady)
         self.sbox2.bind("<Return>", main.calc_result)
 
 
