@@ -322,10 +322,14 @@ class Main:
         result = Decimal('{}'.format(self.accuracy * sqrt(sum(parameters) * levels)))
         result = result.quantize(Decimal("1.0"), ROUND_HALF_UP)
         if result == 0.0:
-            self.labels.label9["text"] = "0,1 кв.м."
+            result = 0.1
+        self.labels.label9["text"] = (str(result) + " кв.м.")
+        if levels == 1:
+            formula = formula[:-1] + f') = {result}'
         else:
-            self.labels.label9["text"] = (str(result) + " " + "кв.м.")
-        formula = formula[:-1] + f') = {result}'
+            formula = formula[:-1].replace('√(', '√((') + f')*{levels}) = {result}'
+        if len(parameters) == 1:
+            formula = formula.replace('√(', '√').replace('))', ')')
         self.text_area.text1.insert(1.0, formula)
 
     def check_accurasy(self, event):
