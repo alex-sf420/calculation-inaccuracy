@@ -17,7 +17,7 @@ class Frames:
 
         self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
         self.frame2 = ttk.Frame(self.draw)
-        self.draw.config(scrollregion=(0, 0, 0, 20))
+        self.draw.config(scrollregion=(0, 0, 0, 63))
         self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
 
         self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
@@ -316,7 +316,7 @@ class Main:
                     height = height.replace(",", ".")
                 height = float(height)
                 parameters.append(width ** 2 + height ** 2)
-                formula += f'({width}^2 + {height}^2)+'
+                formula += f'({width}\u00B2 + {height}\u00B2)+'
         except ValueError:
             return
         result = Decimal('{}'.format(self.accuracy * sqrt(sum(parameters) * levels)))
@@ -348,6 +348,7 @@ class Main:
         Рассчитывает погрешность определения площади застройки на
         основе загруженных координат
         """
+        formula = f"= 0.35 * 0.1 * √("
         try:
             file_name = fd.askopenfilename()  # загружаем координаты в
             with open(file_name) as f:  # формате .txt
@@ -364,14 +365,16 @@ class Main:
         coords.append(coords[1])      # последним элементом
         tmp_list = []
         for i in range(1, len(coords) - 1):
-            tmp_list.append((float(coords[i - 1][1]) - float(coords[i + 1][1])) ** 2 +
-                            (float(coords[i - 1][2]) - float(coords[i + 1][2])) ** 2)
+            tmp_list.append((float(coords[i + 1][1]) - float(coords[i - 1][1])) ** 2 +
+                            (float(coords[i + 1][2]) - float(coords[i - 1][2])) ** 2)
         result = Decimal('{}'.format(0.35 * 0.1 * sqrt(sum(tmp_list))))
         result = result.quantize(Decimal("1.0"), ROUND_HALF_UP)
         if result == 0.0:
-            self.labels.label9["text"] = "0,1 кв.м."
+            result = 0.1
         else:
-            self.labels.label9["text"] = (str(result) + " " + "кв.м.")
+            self.labels.label9["text"] = (str(result) + " кв.м.")
+        formula += f'{round(sum(tmp_list), 2)}) = {result}'
+        self.text_area.text1.insert(1.0, formula)
 
 
 class Start:
