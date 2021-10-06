@@ -293,7 +293,7 @@ class Main:
         соответствующей метке
         """
         self.text_area.text1.delete(1.0, END)
-        formula = f"= {self.accuracy} * √("
+        formula = f"m\u209A = {self.accuracy} * √("
         try:
             levels = int(self.sboxes.sbox2.get())
         except ValueError:
@@ -348,7 +348,7 @@ class Main:
         Рассчитывает погрешность определения площади застройки на
         основе загруженных координат
         """
-        formula = f"= 0.35 * 0.1 * √("
+        formula = f'm\u209A = 0.35 * 0.1 * √('
         try:
             file_name = fd.askopenfilename()  # загружаем координаты в
             with open(file_name) as f:  # формате .txt
