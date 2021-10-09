@@ -4,6 +4,7 @@ from tkinter import ttk
 from ttkthemes import ThemedTk
 from math import sqrt
 from decimal import Decimal, ROUND_HALF_UP
+import csv
 
 
 class Frames:
@@ -292,7 +293,6 @@ class Main:
         Производит рассчет погрешности и выводит полученное значение в
         соответствующей метке
         """
-        self.text_area.text1.delete(1.0, END)
         formula = f"m\u209A = {self.accuracy} * √("
         try:
             levels = int(self.sboxes.sbox2.get())
@@ -330,6 +330,7 @@ class Main:
             formula = formula[:-1].replace('√(', '√((') + f')*{levels}) = {result}'
         if len(parameters) == 1:
             formula = formula.replace('√(', '√').replace('))', ')')
+        self.text_area.text1.delete(1.0, END)
         self.text_area.text1.insert(1.0, formula)
 
     def check_accurasy(self, event):
@@ -348,21 +349,33 @@ class Main:
         Рассчитывает погрешность определения площади застройки на
         основе загруженных координат
         """
-        formula = f'm\u209A = 0.35 * 0.1 * √('
-        try:
-            file_name = fd.askopenfilename()  # загружаем координаты в
-            with open(file_name) as f:  # формате .txt
-                coords = f.readlines()
-        except FileNotFoundError:
+        file_name = fd.askopenfilename()
+        if not file_name:
             return
-        coords.pop()
-        for i in range(len(coords)):  # меняем запятые на точки,
-            if "," in coords[i]:
-                coords[i] = coords[i].replace(",", ".")
-            coords[i] = coords[i].rstrip('\n')
-            coords[i] = coords[i].split()
-        coords.insert(0, coords[-1])  # дополняем список первым и
-        coords.append(coords[1])      # последним элементом
+        coords = []
+        if file_name[-3:] == 'txt':
+            with open(file_name) as file:
+                coords = file.readlines()
+            for i in range(len(coords)):  # меняем запятые на точки,
+                if "," in coords[i]:
+                    coords[i] = coords[i].replace(",", ".")
+                coords[i] = coords[i].rstrip('\n')
+                coords[i] = coords[i].split()
+        elif file_name[-3:] == 'csv':
+            with open(file_name) as file:
+                reader = csv.DictReader(file, delimiter=';')
+                for line in reader:
+                    if line['Номер']:
+                        coords.append([line['Номер'], line['Новый X'], line['Новый Y']])
+                for line in coords:  # меняем запятые на точки,
+                    for item in range(len(line)):
+                        if "," in line[item]:
+                            line[item] = line[item].replace(",", ".")
+        if coords[0] == coords[-1]:
+            coords.insert(0, coords[-2])  # дополняем список первым и последним элементом
+        else:
+            coords.insert(0, coords[-1])
+            coords.append(coords[1])
         tmp_list = []
         for i in range(1, len(coords) - 1):
             tmp_list.append((float(coords[i + 1][1]) - float(coords[i - 1][1])) ** 2 +
@@ -373,7 +386,8 @@ class Main:
             result = 0.1
         else:
             self.labels.label9["text"] = (str(result) + " кв.м.")
-        formula += f'{round(sum(tmp_list), 2)}) = {result}'
+        formula = f'm\u209A = 0.35 * 0.1 * √({round(sum(tmp_list), 2)}) = {result}'
+        self.text_area.text1.delete(1.0, END)
         self.text_area.text1.insert(1.0, formula)
 
 
