@@ -173,20 +173,20 @@ class ToolTips:
 
     @staticmethod
     def create_tips(main):
-        ToolTips(main.buttons.but1, 'Отображает количество строк раздела '
-                                    '"Размеры помещений" на основании '
-                                    'значения указанного в поле '
-                                    '"Количество пар длина/ширина"')
-        ToolTips(main.buttons.but2, 'Выводит результат рассчета СКП площади на '
-                                    'основании данных раздела "Размеры помещений" '
-                                    'с учетом заданного количества этажей и '
-                                    'кривизны стен')
-        ToolTips(main.buttons.but3, 'Выводит результат рассчета СКП площади'
-                                    'застройки для выбранного каталога координат '
-                                    'в формате .txt')
-        ToolTips(main.sboxes.sbox1, 'Укажите количество пар длина/ширина помещений')
-        ToolTips(main.sboxes.sbox2, 'Укажите количество этажей объекта, в т.ч. подземных')
-        ToolTips(main.optionmenu.opt, 'Выберите значение кривизны стен')
+        ToolTips(main.buttons.but1, '''Отображает количество строк раздела 
+                                    "Размеры помещений" на основании 
+                                    значения указанного в поле 
+                                    ""Количество пар длина/ширина"''')
+        ToolTips(main.buttons.but2, '''Выводит результат рассчета СКП площади на 
+                                    основании данных раздела "Размеры помещений" 
+                                    с учетом заданного количества этажей и 
+                                    кривизны стен''')
+        ToolTips(main.buttons.but3, '''Выводит результат рассчета СКП площади
+                                    застройки для выбранного каталога координат 
+                                    в формате .txt или .csv''')
+        ToolTips(main.labels.label1, 'Укажите количество пар длина/ширина помещений')
+        ToolTips(main.labels.label2, 'Укажите количество этажей объекта, в т.ч. подземных')
+        ToolTips(main.labels.label3, 'Выберите значение кривизны стен')
 
     def enter(self, event):
         self.id = self.widget.after(self.waittime, self.showtip)
@@ -283,10 +283,12 @@ class Main:
             self.totalrows = row_add
             if row_add <= 9:
                 self.frames.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
-                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
+                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() \
+                                                    * row_add))
             else:
                 self.frames.draw.configure(height=210,
-                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
+                                      scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() \
+                                                    * row_add))
 
     def calc_result(self, event=None):
         """
