@@ -6,207 +6,137 @@ from math import sqrt
 from decimal import Decimal, ROUND_HALF_UP
 import csv
 
-
-class Frames:
+class MainFrame:
     """
-    Создает фреймы
+    Создает основное окно и виджеты
     """
+    def __init__(self, main):
+        self.make_frame()
+        self.make_buttons(main)
+        self.make_lables(main)
+        self.make_entries(main)
+        self.make_separators()
+        self.make_sboxes(main)
+        self.make_option_menu(main)
+        self.make_text_area()
 
-    def __init__(self):
-        self.frame1 = ttk.Frame()
-        self.frame1.grid(sticky=(N, E, S, W))
+    def make_frame(self):
+            self.frame1 = ttk.Frame()
+            self.frame1.grid(sticky=(N, E, S, W))
 
-        self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
-        self.frame2 = ttk.Frame(self.draw)
-        self.draw.config(scrollregion=(0, 0, 0, 63))
-        self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
+            self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
+            self.frame2 = ttk.Frame(self.draw)
+            self.draw.config(scrollregion=(0, 0, 0, 63))
+            self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
 
-        self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
-        self.draw['yscrollcommand'] = self.draw.sbar1.set
-        self.draw.sbar1['command'] = self.draw.yview
-        self.draw.sbar1.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
-        self.draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
+            self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
+            self.draw['yscrollcommand'] = self.draw.sbar1.set
+            self.draw.sbar1['command'] = self.draw.yview
+            self.draw.sbar1.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
+            self.draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
 
-
-class Buttons:
-    """
-    Отображает кнопки
-    """
-
-    def __init__(self, parent, main):
-        self.parent = parent
-
-        self.but1 = ttk.Button(self.parent, text="Отобразить", command=main.set_row)
+    def make_buttons(self, main):
+        """
+        Создает кнопки
+        """
+        self.but1 = ttk.Button(self.frame1, text="Отобразить", command=main.set_row)
         self.but1.grid(row=3, column=3, padx=Main.padx, pady=Main.pady)
-        self.but2 = ttk.Button(self.parent, text="Рассчитать", command=main.calc_result)
+        self.but2 = ttk.Button(self.frame1, text="Рассчитать", command=main.calc_result)
         self.but2.grid(row=1, column=3, padx=Main.padx, pady=Main.pady)
-        self.but3 = ttk.Button(self.parent, text="S застройки", command=main.calc_built_up)
+        self.but3 = ttk.Button(self.frame1, text="S застройки", command=main.calc_built_up)
         self.but3.grid(row=2, column=3, padx=Main.padx, pady=Main.pady)
 
-
-class Labels:
-    """
-    Отображает метки, динамическая перерисовка производится
-    в методе set_row класса Main
-    """
-
-    def __init__(self, parent1, parent2, main):
-        self.parent1 = parent1
-        self.parent2 = parent2
-        self.label1 = ttk.Label(self.parent1, text="Количество пар длина/ширина:")
+    def make_lables(self, main):
+        """
+        Отображает метки, динамическая перерисовка производится
+        в методе set_row класса Main
+        """
+        self.label1 = ttk.Label(self.frame1, text="Количество пар длина/ширина:")
         self.label1.grid(row=3, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
-        self.label2 = ttk.Label(self.parent1, text="Количество этажей:")
+        self.label2 = ttk.Label(self.frame1, text="Количество этажей:")
         self.label2.grid(row=2, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
-        self.label3 = ttk.Label(self.parent1, text="Кривизна стен:")
+        self.label3 = ttk.Label(self.frame1, text="Кривизна стен:")
         self.label3.grid(row=1, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
-        self.label4 = ttk.Label(self.parent1, text="Размеры помещений:")
+        self.label4 = ttk.Label(self.frame1, text="Размеры помещений:")
         self.label4.grid(row=5, column=0, columnspan=2, sticky=E, padx=16, pady=5)
-        self.label5 = ttk.Label(self.parent1, text="Длина, м")
+        self.label5 = ttk.Label(self.frame1, text="Длина, м")
         self.label5.grid(row=6, column=0, sticky=SE)
-        self.label6 = ttk.Label(self.parent1, text="Ширина, м")
+        self.label6 = ttk.Label(self.frame1, text="Ширина, м")
         self.label6.grid(row=6, column=1, sticky=S, padx=Main.padx)
-        self.label8 = ttk.Label(self.parent1, text="Результат:", font=('Sans', '11', 'bold'))
+        self.label8 = ttk.Label(self.frame1, text="Результат:", font=('Sans', '11', 'bold'))
         self.label8.grid(row=5, column=3, sticky=S, padx=Main.padx, pady=Main.pady)
-        self.label9 = ttk.Label(self.parent1, text=(str(main.result) + " " + "кв.м."),
+        self.label9 = ttk.Label(self.frame1, text=(str(main.result) + " " + "кв.м."),
                                 font=('Sans', '15', 'bold'))
         self.label9.grid(row=6, column=3, padx=0, pady=0)
-        self.label10 = ttk.Label(self.parent1, text="Формула:")
+        self.label10 = ttk.Label(self.frame1, text="Формула:")
         self.label10.grid(row=10, column=0, sticky=W, padx=15, pady=2)
 
-
-class Entries:
-    """
-    Отображает поля, динамическая перерисовка производится
-    в методе set_row класса Main
-    """
-
-    def __init__(self, parent, main):
-        self.parent = parent
-        self.width = 11
+    def make_entries(self, main):
+        """
+        Отображает поля, динамическая перерисовка производится
+        в методе set_row класса Main
+        """
+        self.entry_width = 11
         for i in range(3):
-            label = ttk.Label(self.parent, text=i+1)
-            label.grid(row=7+i, column=0, sticky=W, ipadx=43)
-            ent1 = ttk.Entry(self.parent, width=self.width)
-            ent1.grid(row=7+i, column=0, sticky=E)
+            label = ttk.Label(self.frame2, text=i + 1)
+            label.grid(row=7 + i, column=0, sticky=W, ipadx=43)
+            ent1 = ttk.Entry(self.frame2, width=self.entry_width)
+            ent1.grid(row=7 + i, column=0, sticky=E)
             ent1.bind("<Return>", main.calc_result)
-            ent2 = ttk.Entry(self.parent, width=self.width)
-            ent2.grid(row=7+i, column=1, sticky=W)
+            ent2 = ttk.Entry(self.frame2, width=self.entry_width)
+            ent2.grid(row=7 + i, column=1, sticky=W)
             ent2.bind("<Return>", main.calc_result)
             main.listrows.append((ent1, ent2, label))
         main.totalrows = 3
 
-
-class Separators:
-    """
-    Отображает разделительные линии, динамическая перерисовка производится
-    в методе set_row класса Main
-    """
-
-    def __init__(self, parent):
-        self.parent = parent
-        self.sep1 = ttk.Separator(self.parent, orient=VERTICAL)
+    def make_separators(self):
+        """
+        Отображает разделительные линии, динамическая перерисовка производится
+        в методе set_row класса Main
+        """
+        self.sep1 = ttk.Separator(self.frame1, orient=VERTICAL)
         self.sep1.grid(row=0, column=2, rowspan=11, sticky=(N, E, S, W))
-        self.sep2 = ttk.Separator(self.parent)
+        self.sep2 = ttk.Separator(self.frame1)
         self.sep2.grid(row=4, column=0, columnspan=4, padx=Main.padx,
                        sticky=(N, E, S, W))
-        self.sep3 = ttk.Separator(self.parent)
+        self.sep3 = ttk.Separator(self.frame1)
         self.sep3.grid(row=12, column=0, columnspan=4, padx=Main.padx, pady=Main.pady,
                        sticky=(N, E, S, W))
 
-
-class Sboxes:
-    """
-    Отображает поля выбора значений
-    """
-
-    def __init__(self, parent, main):
-        self.parent = parent
+    def make_sboxes(self, main):
+        """
+        Отображает поля выбора значений
+        """
         self.width = 5
-        self.sbox1 = ttk.Spinbox(self.parent, width=self.width, from_=3, to=100)
+        self.sbox1 = ttk.Spinbox(self.frame1, width=self.width, from_=3, to=100)
         self.sbox1.insert(0, 3)
         self.sbox1.grid(row=3, column=1, sticky=W, padx=Main.padx, pady=Main.pady)
         self.sbox1.bind("<Return>", main.set_row)
-        self.sbox2 = ttk.Spinbox(self.parent, width=self.width, from_=1, to=50)
+        self.sbox2 = ttk.Spinbox(self.frame1, width=self.width, from_=1, to=50)
         self.sbox2.insert(0, 1)
-        self.sbox2.grid(row=2, column=1,sticky=W, padx=Main.padx, pady=Main.pady)
+        self.sbox2.grid(row=2, column=1, sticky=W, padx=Main.padx, pady=Main.pady)
         self.sbox2.bind("<Return>", main.calc_result)
 
-
-class Optionmenu:
-    """
-    Отображает всплывающие меню
-    """
-    def __init__(self, parent, main):
-        self.parent = parent
+    def make_option_menu(self, main):
+        """
+        Отображает всплывающие меню
+        """
         self.variable = StringVar()
         self.options = ["1 см", "2 см", "3 см"]
         self.variable.set(self.options[0])
-        self.opt = ttk.OptionMenu(self.parent, self.variable, '', *self.options,
+        self.opt = ttk.OptionMenu(self.frame1, self.variable, '', *self.options,
                                   command=main.check_accurasy)
         self.opt.grid(row=1, column=1, padx=Main.padx, pady=Main.pady)
 
-
-class TextArea:
-    def __init__(self, parent, main):
-        self.text1 = Text(parent, width=45, height=4)
-        self.text1.grid(row=11, column=0, columnspan=4, padx=15, pady=2,)
-        sbar2 = ttk.Scrollbar(parent, command= self.text1.yview)
+    def make_text_area(self):
+        """
+        Создает тектовое поле
+        """
+        self.text1 = Text(self.frame1, width=45, height=4)
+        self.text1.grid(row=11, column=0, columnspan=4, padx=15, pady=2, )
+        sbar2 = ttk.Scrollbar(self.frame1, command=self.text1.yview)
         sbar2.grid(row=11, column=3, sticky=N + S + E, padx=0, pady=2)
         self.text1.config(yscrollcommand=sbar2.set)
-
-
-class ToolTips:
-    """
-    Отображает всплывающие подсказки
-    """
-    def __init__(self, widget=None, text='widget info'):
-        if widget:
-            self.waittime = 1000
-            self.wraplength = 180
-            self.widget = widget
-            self.text = text
-            self.widget.bind("<Enter>", self.enter)
-            self.widget.bind("<Leave>", self.leave)
-            self.widget.bind("<ButtonPress>", self.leave)
-            self.id = None
-            self.tip = None
-
-    @staticmethod
-    def create_tips(main):
-        ToolTips(main.buttons.but1, '''Отображает количество строк раздела 
-                                    "Размеры помещений" на основании 
-                                    значения указанного в поле 
-                                    ""Количество пар длина/ширина"''')
-        ToolTips(main.buttons.but2, '''Выводит результат рассчета СКП площади на 
-                                    основании данных раздела "Размеры помещений" 
-                                    с учетом заданного количества этажей и 
-                                    кривизны стен''')
-        ToolTips(main.buttons.but3, '''Выводит результат рассчета СКП площади
-                                    застройки для выбранного каталога координат 
-                                    в формате .txt или .csv''')
-        ToolTips(main.labels.label1, 'Укажите количество пар длина/ширина помещений')
-        ToolTips(main.labels.label2, 'Укажите количество этажей объекта, в т.ч. подземных')
-        ToolTips(main.labels.label3, 'Выберите значение кривизны стен')
-
-    def enter(self, event):
-        self.id = self.widget.after(self.waittime, self.showtip)
-
-    def leave(self, event):
-        self.widget.after_cancel(self.id)
-        if self.tip:
-            self.tip.destroy()
-
-    def showtip(self):
-        x, y = self.widget.bbox("insert")[:2]
-        x += self.widget.winfo_rootx() + 45
-        y += self.widget.winfo_rooty() + 30
-        self.tip = Toplevel(self.widget)
-        self.tip.wm_overrideredirect(True)
-        self.tip.wm_geometry("+%d+%d" % (x, y))
-        label = Label(self.tip, text=self.text, justify='left',
-                      background="#ffffff", relief='solid', borderwidth=1,
-                      wraplength = self.wraplength)
-        label.pack(ipadx=1)
 
 
 class Main:
@@ -214,7 +144,6 @@ class Main:
     Содержит функции для расчета погрешности и отображения необходимого
     количества строк для частей/помещений
     """
-
     padx = 8
     pady = 8
 
@@ -225,15 +154,7 @@ class Main:
         self.totalrows = 0  # количество отображаемых строк/полей
         self.listrows = []  # список строк/полей
         self.result = 0  # результат рассчета погрешности
-        self.frames = Frames()
-        self.buttons = Buttons(parent=self.frames.frame1, main=self)
-        self.labels = Labels(parent1=self.frames.frame1, parent2=self.frames.frame2, main=self)
-        self.entries = Entries(parent=self.frames.frame2, main=self)
-        self.separators = Separators(parent=self.frames.frame1)
-        self.sboxes = Sboxes(parent=self.frames.frame1, main=self)
-        self.optionmenu = Optionmenu(parent=self.frames.frame1, main=self)
-        self.text_area = TextArea(parent=self.frames.frame1, main=self)
-        ToolTips().create_tips(main = self)
+        self.window = MainFrame(main=self)
 
     def set_row(self, event=None):
         """
@@ -244,29 +165,29 @@ class Main:
         self.number_row_to_paste = self.totalrows + 7  # номер row в grid(), в которое будет
                                                        # добавляться следующаая строка/поле
         try:
-            row_add = int(self.sboxes.sbox1.get())   # количество строк/полей, которое нужно отразить
+            row_add = int(self.window.sbox1.get())   # количество строк/полей, которое нужно отразить
         except ValueError:
             return
         if row_add < 1:
             return
         if row_add > self.totalrows:
             for i in range(row_add - self.totalrows):
-                label11 = ttk.Label(self.frames.frame2,
+                label11 = ttk.Label(self.window.frame2,
                                     text=("{}".format(self.totalrows + i + 1)))
                 label11.grid(row=(self.number_row_to_paste + i), column=0,
                              padx=0, pady=0, ipadx=40, sticky=W)
-                ent3 = ttk.Entry(self.frames.frame2, width=self.entries.width)
+                ent3 = ttk.Entry(self.window.frame2, width=self.window.entry_width)
                 ent3.grid(row=(self.number_row_to_paste + i), column=0, sticky=E)
                 ent3.bind("<Return>", self.calc_result)
-                ent4 = ttk.Entry(self.frames.frame2, width=self.entries.width)
+                ent4 = ttk.Entry(self.window.frame2, width=self.window.entry_width)
                 ent4.grid(row=(self.number_row_to_paste + i), column=1, sticky=W)
                 ent4.bind("<Return>", self.calc_result)
                 self.listrows.append((ent3, ent4, label11))
             if row_add <= 9:
-                self.frames.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
+                self.window.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
                                       scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
             else:
-                self.frames.draw.configure(height=210,
+                self.window.draw.configure(height=210,
                                       scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() * row_add))
 
             self.totalrows = row_add
@@ -282,11 +203,11 @@ class Main:
                 self.listrows.pop()
             self.totalrows = row_add
             if row_add <= 9:
-                self.frames.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
+                self.window.draw.configure(height=self.listrows[0][0].winfo_height() * row_add,
                                       scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() \
                                                     * row_add))
             else:
-                self.frames.draw.configure(height=210,
+                self.window.draw.configure(height=210,
                                       scrollregion=(0, 0, 0, self.listrows[0][0].winfo_height() \
                                                     * row_add))
 
@@ -297,7 +218,7 @@ class Main:
         """
         formula = f"m\u209A = {self.accuracy} * √("
         try:
-            levels = int(self.sboxes.sbox2.get())
+            levels = int(self.window.sbox2.get())
         except ValueError:
             return
         if levels < 1:
@@ -325,15 +246,15 @@ class Main:
         result = result.quantize(Decimal("1.0"), ROUND_HALF_UP)
         if result == 0.0:
             result = 0.1
-        self.labels.label9["text"] = (str(result) + " кв.м.")
+        self.window.label9["text"] = (str(result) + " кв.м.")
         if levels == 1:
             formula = formula[:-1] + f') = {result}'
         else:
             formula = formula[:-1].replace('√(', '√((') + f')*{levels}) = {result}'
         if len(parameters) == 1:
             formula = formula.replace('√(', '√').replace('))', ')')
-        self.text_area.text1.delete(1.0, END)
-        self.text_area.text1.insert(1.0, formula)
+        self.window.text1.delete(1.0, END)
+        self.window.text1.insert(1.0, formula)
 
     def check_accurasy(self, event):
         """
@@ -387,10 +308,10 @@ class Main:
         if result == 0.0:
             result = 0.1
         else:
-            self.labels.label9["text"] = (str(result) + " кв.м.")
+            self.window.label9["text"] = (str(result) + " кв.м.")
         formula = f'm\u209A = 0.35 * 0.1 * √({round(sum(tmp_list), 2)}) = {result}'
-        self.text_area.text1.delete(1.0, END)
-        self.text_area.text1.insert(1.0, formula)
+        self.window.text1.delete(1.0, END)
+        self.window.text1.insert(1.0, formula)
 
 
 class Start:
