@@ -21,19 +21,22 @@ class MainFrame:
         self.make_text_area()
 
     def make_frame(self):
-            self.frame1 = ttk.Frame()
-            self.frame1.grid(sticky=(N, E, S, W))
+        """
+        Создает фреймы
+        """
+        self.frame1 = ttk.Frame()
+        self.frame1.grid(sticky=(N, E, S, W))
 
-            self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
-            self.frame2 = ttk.Frame(self.draw)
-            self.draw.config(scrollregion=(0, 0, 0, 63))
-            self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
+        self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
+        self.frame2 = ttk.Frame(self.draw)
+        self.draw.config(scrollregion=(0, 0, 0, 63))
+        self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
 
-            self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
-            self.draw['yscrollcommand'] = self.draw.sbar1.set
-            self.draw.sbar1['command'] = self.draw.yview
-            self.draw.sbar1.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
-            self.draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
+        self.draw.create_window(0, 0, window=self.frame2, anchor=N + W)
+        self.draw['yscrollcommand'] = self.draw.sbar1.set
+        self.draw.sbar1['command'] = self.draw.yview
+        self.draw.sbar1.grid(row=7, column=1, sticky=N + S + E, padx=0, pady=0)
+        self.draw.grid(row=7, column=0, columnspan=2, sticky=E, padx=0, pady=0)
 
     def make_buttons(self, main):
         """
@@ -48,7 +51,7 @@ class MainFrame:
 
     def make_lables(self, main):
         """
-        Отображает метки, динамическая перерисовка производится
+        Создает метки, динамическая перерисовка производится
         в методе set_row класса Main
         """
         self.label1 = ttk.Label(self.frame1, text="Количество пар длина/ширина:")
@@ -73,7 +76,7 @@ class MainFrame:
 
     def make_entries(self, main):
         """
-        Отображает поля, динамическая перерисовка производится
+        Создает поля, динамическая перерисовка производится
         в методе set_row класса Main
         """
         self.entry_width = 11
@@ -91,7 +94,7 @@ class MainFrame:
 
     def make_separators(self):
         """
-        Отображает разделительные линии, динамическая перерисовка производится
+        Создает разделительные линии, динамическая перерисовка производится
         в методе set_row класса Main
         """
         self.sep1 = ttk.Separator(self.frame1, orient=VERTICAL)
@@ -105,7 +108,7 @@ class MainFrame:
 
     def make_sboxes(self, main):
         """
-        Отображает поля выбора значений
+       Создает поля выбора значений
         """
         self.width = 5
         self.sbox1 = ttk.Spinbox(self.frame1, width=self.width, from_=3, to=100)
@@ -119,7 +122,7 @@ class MainFrame:
 
     def make_option_menu(self, main):
         """
-        Отображает всплывающие меню
+        Создает всплывающие меню
         """
         self.variable = StringVar()
         self.options = ["1 см", "2 см", "3 см"]
