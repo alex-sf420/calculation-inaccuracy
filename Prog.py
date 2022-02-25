@@ -19,6 +19,7 @@ class MainFrame:
         self.make_sboxes(main)
         self.make_option_menu(main)
         self.make_text_area()
+        self.make_tooltips()
 
     def make_frame(self):
         """
@@ -140,6 +141,54 @@ class MainFrame:
         sbar2 = ttk.Scrollbar(self.frame1, command=self.text1.yview)
         sbar2.grid(row=11, column=3, sticky=N + S + E, padx=0, pady=2)
         self.text1.config(yscrollcommand=sbar2.set)
+
+    def make_tooltips(self):
+        class ToolTip:
+            """
+            Отображает всплывающие подсказки
+            """
+
+            def __init__(self, widget=None, text='widget info'):
+                if widget:
+                    self.waittime = 1000
+                    self.wraplength = 180
+                    self.widget = widget
+                    self.text = text
+                    self.widget.bind("<Enter>", self.enter)
+                    self.widget.bind("<Leave>", self.leave)
+                    self.widget.bind("<ButtonPress>", self.leave)
+                    self.id = None
+                    self.tip = None
+
+            @staticmethod
+            def create_tips(main):
+                ToolTip(main.but1, '''Отображает количество строк раздела "Размеры помещений" на основании значения, указанного в поле "Количество пар длина/ширина"''')
+                ToolTip(main.but2, '''Выводит результат расчета СКП площади на основании данных раздела "Размеры помещений" с учетом заданного количества этажей и кривизны стен''')
+                ToolTip(main.but3, '''Выводит результат расчета СКП площади застройки для выбранного каталога координат в формате .txt''')
+                ToolTip(main.label1, 'Укажите количество пар длина/ширина помещений')
+                ToolTip(main.label2, 'Укажите количество этажей объекта, в т.ч. подземных')
+                ToolTip(main.label3, 'Выберите значение кривизны стен')
+
+            def enter(self, event):
+                self.id = self.widget.after(self.waittime, self.showtip)
+
+            def leave(self, event):
+                self.widget.after_cancel(self.id)
+                if self.tip:
+                    self.tip.destroy()
+
+            def showtip(self):
+                x, y = self.widget.bbox("insert")[:2]
+                x += self.widget.winfo_rootx() + 45
+                y += self.widget.winfo_rooty() + 30
+                self.tip = Toplevel(self.widget)
+                self.tip.wm_overrideredirect(True)
+                self.tip.wm_geometry("+%d+%d" % (x, y))
+                label = Label(self.tip, text=self.text, justify='left',
+                              background="#ffffff", relief='solid', borderwidth=1,
+                              wraplength=self.wraplength)
+                label.pack(ipadx=1)
+        ToolTip().create_tips(main=self)
 
 
 class Main:
