@@ -28,7 +28,7 @@ class MainFrame:
         self.frame1 = ttk.Frame()
         self.frame1.grid(sticky=(N, E, S, W))
 
-        self.draw = Canvas(self.frame1, width=173, height=63, bd=0, highlightthickness=0)
+        self.draw = Canvas(self.frame1, width=180, height=63, bd=0, highlightthickness=0)
         self.frame2 = ttk.Frame(self.draw)
         self.draw.config(scrollregion=(0, 0, 0, 63))
         self.draw.sbar1 = ttk.Scrollbar(self.frame1, orient=VERTICAL)
@@ -61,12 +61,12 @@ class MainFrame:
         self.label2.grid(row=2, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
         self.label3 = ttk.Label(self.frame1, text="Кривизна стен:")
         self.label3.grid(row=1, column=0, sticky=E, padx=Main.padx, pady=Main.pady)
-        self.label4 = ttk.Label(self.frame1, text="Размеры помещений:")
+        self.label4 = ttk.Label(self.frame1, text="Размеры помещений:  ")
         self.label4.grid(row=5, column=0, columnspan=2, sticky=E, padx=16, pady=5)
-        self.label5 = ttk.Label(self.frame1, text="Длина, м")
+        self.label5 = ttk.Label(self.frame1, text="Длина, м  ")
         self.label5.grid(row=6, column=0, sticky=SE)
         self.label6 = ttk.Label(self.frame1, text="Ширина, м")
-        self.label6.grid(row=6, column=1, sticky=S, padx=Main.padx)
+        self.label6.grid(row=6, column=1, sticky=SW, padx=Main.padx)
         self.label8 = ttk.Label(self.frame1, text="Результат:", font=('Sans', '11', 'bold'))
         self.label8.grid(row=5, column=3, sticky=S, padx=Main.padx, pady=Main.pady)
         self.label9 = ttk.Label(self.frame1, text=(str(main.result) + " " + "кв.м."),
@@ -164,7 +164,7 @@ class MainFrame:
             def create_tips(main):
                 ToolTip(main.but1, '''Отображает количество строк раздела "Размеры помещений" на основании значения, указанного в поле "Количество пар длина/ширина"''')
                 ToolTip(main.but2, '''Выводит результат расчета СКП площади на основании данных раздела "Размеры помещений" с учетом заданного количества этажей и кривизны стен''')
-                ToolTip(main.but3, '''Выводит результат расчета СКП площади застройки для выбранного каталога координат в формате .txt''')
+                ToolTip(main.but3, '''Выводит результат расчета СКП площади застройки для выбранного каталога координат в формате .txt (только для одноконтурного объекта)''')
                 ToolTip(main.label1, 'Укажите количество пар длина/ширина помещений')
                 ToolTip(main.label2, 'Укажите количество этажей объекта, в т.ч. подземных')
                 ToolTip(main.label3, 'Выберите значение кривизны стен')
